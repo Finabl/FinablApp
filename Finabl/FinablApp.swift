@@ -23,7 +23,7 @@ struct FinablApp: App {
     var body: some Scene {
         
         WindowGroup {
-            OnboardingView() //change this to a view that chooses which view lol
+            HomePageView() //change this to a view that chooses which view lol
         }
     }
 }

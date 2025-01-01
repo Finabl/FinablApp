@@ -41,7 +41,6 @@ class QuestionViewModel: ObservableObject {
         ("When is your birthday?", .text),
         ("What is your email address?", .text),
         ("What is your phone number?", .text),
-        ("Code from phone number", .text),
         ("Are you currently a student?", .singleSelect(options: ["Yes", "No"])),
         ("What university do you attend?", .text),
         ("Create a user name", .text),
@@ -120,7 +119,6 @@ class QuestionViewModel: ObservableObject {
                 "birthday": self.birthday?.iso8601String() ?? "",
                 "email": email,
                 "phoneNumber": self.answers["What is your phone number?"] ?? "",
-                "phoneCode": self.answers["Code from phone number"] ?? "",
                 "isStudent": self.answers["Are you currently a student?"] as? String == "Yes",
                 "university": self.answers["What university do you attend?"] ?? "",
                 "userName": self.answers["Create a user name"] ?? ""
@@ -131,7 +129,7 @@ class QuestionViewModel: ObservableObject {
     }
 
     private func postAnswersToAPI(apiData: [String: Any], completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: "http://192.168.1.248:3000/api/users/register") else {
+        guard let url = URL(string: "http://127.0.0.1:3000/api/users/register") else {
             completion(false)
             return
         }

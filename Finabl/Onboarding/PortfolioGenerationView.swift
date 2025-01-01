@@ -6,16 +6,16 @@
 //
 
 import SwiftUI
-
-struct InfoItem: Identifiable {
-    let id = UUID()
-    let text: String
-}
+import Firebase
+import FirebaseAuth
 
 struct PortfolioGenerationView: View {
     @Environment(\.colorScheme) var colorScheme
     @StateObject private var viewModel = PortfolioGenerationViewModel()
     @State private var expandedInfo: String? = nil // Tracks which option's info box is expanded
+    @State private var navigateToPortfolioDisplay: Bool = false // Tracks navigation to PortfolioDisplayView
+    @StateObject private var displayViewModel = PortfolioDisplayViewModel()
+    let userEmail = Auth.auth().currentUser?.email
 
     var body: some View {
         VStack(spacing: 16) {
@@ -44,21 +44,46 @@ struct PortfolioGenerationView: View {
                     }
                     .padding()
                 }
+
+                // Navigate to Portfolio Display
+                Button(action: {
+                    submitAnswersAndFetchPortfolios()
+                }) {
+                    Text("Generate Portfolios")
+                        .font(Font.custom("Anuphan-Medium", size: 18))
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding(.horizontal)
+                .background(
+                    NavigationLink(
+                        destination: PortfolioDisplayView(viewModel: displayViewModel),
+                        isActive: $navigateToPortfolioDisplay,
+                        label: { EmptyView() }
+                    )
+                    .hidden()
+                )
             } else {
                 VStack(spacing: 16) {
                     ZStack(alignment: .leading) {
-                        ProgressView(value: viewModel.progress)
+                        // Progress Bar
+                        ProgressView(value: Double(viewModel.currentQuestionIndex) / Double(viewModel.questions.count - 1))
                             .progressViewStyle(LinearProgressViewStyle())
                             .padding(.horizontal)
-                            .animation(.easeInOut(duration: 0.5), value: viewModel.progress)
+                            .animation(.easeInOut(duration: 0.5), value: viewModel.currentQuestionIndex)
 
+                        // Moving Logo
                         GeometryReader { geometry in
                             Image("elephant head")
                                 .resizable()
                                 .frame(width: 50, height: 50)
                                 .foregroundColor(.green)
-                                .offset(x: CGFloat(viewModel.progress) * (geometry.size.width - 50))
-                                .animation(.easeInOut(duration: 0.5), value: viewModel.progress)
+                                .offset(x: CGFloat(viewModel.currentQuestionIndex) / CGFloat(viewModel.questions.count - 1) * (geometry.size.width - 50))
+                                .animation(.easeInOut(duration: 0.5), value: viewModel.currentQuestionIndex)
+                                .zIndex(1) // Ensure logo appears above the bar
                         }
                         .frame(height: 50)
                     }
@@ -171,6 +196,7 @@ struct PortfolioGenerationView: View {
                         viewModel.goToPreviousQuestion()
                     }
                 }
+                .font(Font.custom("Anuphan-Medium", size: 16))
                 .disabled(viewModel.currentQuestionIndex == 0)
                 .padding()
 
@@ -179,12 +205,13 @@ struct PortfolioGenerationView: View {
                 Button("Continue") {
                     withAnimation {
                         if viewModel.isCompleted {
-                            print("Final Answers: \(viewModel.answersSummary)")
+                            submitAnswersAndFetchPortfolios()
                         } else {
                             viewModel.goToNextQuestion()
                         }
                     }
                 }
+                .font(Font.custom("Anuphan-Medium", size: 16))
                 .disabled(viewModel.selectedAnswers.isEmpty && viewModel.customAnswer.isEmpty)
                 .padding()
             }
@@ -192,7 +219,29 @@ struct PortfolioGenerationView: View {
         .padding()
     }
 
-    // Helper function for subtitle text
+    private func submitAnswersAndFetchPortfolios() {
+        guard let userEmail = Auth.auth().currentUser?.email else {
+            print("User not signed in.")
+            return
+        }
+
+        viewModel.compileAnswersToJSON(email: userEmail) { compiledJSON in
+            guard let compiledJSON = compiledJSON else {
+                print("Failed to compile answers.")
+                return
+            }
+
+            viewModel.submitAnswersToAPI(compiledJSON: compiledJSON,
+                                         onPortfolioReceived: { portfolio in
+                                             displayViewModel.addPortfolio(portfolio)
+                                         }, completion: {
+                                             DispatchQueue.main.async {
+                                                 self.navigateToPortfolioDisplay = true
+                                             }
+                                         })
+        }
+    }
+
     private func subtitleForQuestionType(_ type: PortfolioQuestionType) -> String {
         switch type {
         case .singleSelect:
