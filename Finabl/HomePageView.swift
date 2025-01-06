@@ -17,8 +17,11 @@ struct HomePageView: View {
     var body: some View {
         TabView {
             // Home Tab
+            
             NavigationStack {
-                VStack {
+                //HomeView()
+                HomeView()
+                /*VStack {
                     // Display user's email or "Not signed in yet"
                     HStack {
                         Button(action: {
@@ -32,14 +35,14 @@ struct HomePageView: View {
                                 .padding()
                         }
                         .background(
-                            NavigationLink(
+                            /*NavigationLink(
                                 destination: userEmail != nil
                                     ? ProfileView(isProfileActive: $isProfileViewActive, userEmail: userEmail!)
                                     : nil,
                                 isActive: $isProfileViewActive,
                                 label: { EmptyView() }
                             )
-                            .hidden()
+                            .hidden()*/
                         )
                         
                         Spacer()
@@ -107,7 +110,8 @@ struct HomePageView: View {
                         hasLearningGoals = false
                     }
                 }
-                .padding()
+                .padding()*/
+                
             }
             .tabItem {
                 VStack {
@@ -151,11 +155,7 @@ struct HomePageView: View {
 
             // Social Tab
             NavigationStack {
-                VStack {
-                    Text("Social")
-                        .font(Font.custom("Anuphan-Light", size: 24))
-                        .padding()
-                }
+                SocialHubView()
             }
             .tabItem {
                 VStack {
@@ -165,9 +165,9 @@ struct HomePageView: View {
                 }
             }
         }
-        .accentColor(Color.blue) // Set the tab bar selection color
+        //.accentColor(Color.blue) // Set the tab bar selection color
     }
-
+/*
     // Sign-out function
     private func signOut() {
         do {
@@ -215,7 +215,7 @@ struct HomePageView: View {
                 print("Error parsing JSON: \(error.localizedDescription)")
             }
         }.resume()
-    }
+    }*/
 }
 
 #Preview {

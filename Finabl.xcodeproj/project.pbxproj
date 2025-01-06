@@ -41,17 +41,29 @@
 		6AA3B7962D1CF338004A785C /* Exceptions for "Finabl" folder in "Finabl" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				.swift,
 				Info.plist,
 			);
 			target = 6A63F0452D179649002F4BC8 /* Finabl */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		6A8029392D2B9B2E003BE546 /* Exceptions for "Finabl" folder in "Compile Sources" phase from "Finabl" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 6A63F0422D179649002F4BC8 /* Sources */;
+			membershipExceptions = (
+				.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6A63F0482D179649002F4BC8 /* Finabl */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				6AA3B7962D1CF338004A785C /* Exceptions for "Finabl" folder in "Finabl" target */,
+				6A8029392D2B9B2E003BE546 /* Exceptions for "Finabl" folder in "Compile Sources" phase from "Finabl" target */,
 			);
 			path = Finabl;
 			sourceTree = "<group>";

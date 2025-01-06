@@ -15,58 +15,12 @@ struct PortfolioGenerationView: View {
     @State private var expandedInfo: String? = nil // Tracks which option's info box is expanded
     @State private var navigateToPortfolioDisplay: Bool = false // Tracks navigation to PortfolioDisplayView
     @StateObject private var displayViewModel = PortfolioDisplayViewModel()
+    @State private var isLoading: Bool = false // Tracks if the loading screen is active
     let userEmail = Auth.auth().currentUser?.email
 
     var body: some View {
-        VStack(spacing: 16) {
-            if viewModel.isCompleted {
-                // Summary View
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Summary of Your Answers")
-                            .font(Font.custom("Anuphan-Medium", size: 24))
-                            .fontWeight(.bold)
-                            .padding(.bottom, 10)
-
-                        ForEach(viewModel.answersSummary.keys.sorted(), id: \.self) { question in
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(question)
-                                    .font(Font.custom("Anuphan-Medium", size: 18))
-                                    .fontWeight(.semibold)
-
-                                ForEach(viewModel.answersSummary[question] ?? [], id: \.self) { answer in
-                                    Text("- \(answer)")
-                                        .font(Font.custom("Anuphan-Regular", size: 16))
-                                }
-                            }
-                            .padding(.bottom, 10)
-                        }
-                    }
-                    .padding()
-                }
-
-                // Navigate to Portfolio Display
-                Button(action: {
-                    submitAnswersAndFetchPortfolios()
-                }) {
-                    Text("Generate Portfolios")
-                        .font(Font.custom("Anuphan-Medium", size: 18))
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .padding(.horizontal)
-                .background(
-                    NavigationLink(
-                        destination: PortfolioDisplayView(viewModel: displayViewModel),
-                        isActive: $navigateToPortfolioDisplay,
-                        label: { EmptyView() }
-                    )
-                    .hidden()
-                )
-            } else {
+        ZStack {
+            VStack(spacing: 16) {
                 VStack(spacing: 16) {
                     ZStack(alignment: .leading) {
                         // Progress Bar
@@ -186,59 +140,94 @@ struct PortfolioGenerationView: View {
                         .padding(.vertical, 5)
                     }
                 }
-            }
-
-            Spacer()
-
-            HStack {
-                Button("Back") {
-                    withAnimation {
-                        viewModel.goToPreviousQuestion()
-                    }
-                }
-                .font(Font.custom("Anuphan-Medium", size: 16))
-                .disabled(viewModel.currentQuestionIndex == 0)
-                .padding()
 
                 Spacer()
 
-                Button("Continue") {
-                    withAnimation {
-                        if viewModel.isCompleted {
-                            submitAnswersAndFetchPortfolios()
-                        } else {
-                            viewModel.goToNextQuestion()
+                HStack {
+                    Button("Back") {
+                        withAnimation {
+                            viewModel.goToPreviousQuestion()
                         }
                     }
+                    .font(Font.custom("Anuphan-Medium", size: 16))
+                    .disabled(viewModel.currentQuestionIndex == 0)
+                    .padding()
+
+                    Spacer()
+
+                    Button(viewModel.currentQuestionIndex == viewModel.questions.count - 1 ? "Submit" : "Continue") {
+                        withAnimation {
+                            if viewModel.currentQuestionIndex == viewModel.questions.count - 1 {
+                                // If it's the last question, submit and show loading
+                                isLoading = true
+                                submitAnswersAndFetchPortfolios()
+                            } else {
+                                viewModel.goToNextQuestion()
+                            }
+                        }
+                    }
+                    .font(Font.custom("Anuphan-Medium", size: 16))
+                    .disabled(viewModel.selectedAnswers.isEmpty && viewModel.customAnswer.isEmpty)
+                    .padding()
                 }
-                .font(Font.custom("Anuphan-Medium", size: 16))
-                .disabled(viewModel.selectedAnswers.isEmpty && viewModel.customAnswer.isEmpty)
+            }
+            .padding()
+
+            // Loading Screen
+            if isLoading {
+                Color.black.opacity(0.5)
+                    .edgesIgnoringSafeArea(.all)
+                VStack {
+                    ProgressView("Generating portfolios...")
+                        .font(Font.custom("Anuphan-Medium", size: 18))
+                        .foregroundColor(.primary)
+                        .padding()
+                    Text("This might take a moment. Please wait.")
+                        .font(Font.custom("Anuphan-Regular", size: 16))
+                        .foregroundColor(.primary)
+                }
                 .padding()
+                .background(Color.secondary)
+                .cornerRadius(12)
+                .shadow(radius: 10)
+            }
+
+            // NavigationLink for PortfolioDisplayView
+            NavigationLink(
+                destination: PortfolioDisplayView(viewModel: displayViewModel),
+                isActive: $navigateToPortfolioDisplay
+            ) {
+                EmptyView()
             }
         }
-        .padding()
     }
 
     private func submitAnswersAndFetchPortfolios() {
         guard let userEmail = Auth.auth().currentUser?.email else {
             print("User not signed in.")
+            isLoading = false // Stop the loading screen
             return
         }
 
         viewModel.compileAnswersToJSON(email: userEmail) { compiledJSON in
             guard let compiledJSON = compiledJSON else {
                 print("Failed to compile answers.")
+                isLoading = false // Stop the loading screen
                 return
             }
 
-            viewModel.submitAnswersToAPI(compiledJSON: compiledJSON,
-                                         onPortfolioReceived: { portfolio in
-                                             displayViewModel.addPortfolio(portfolio)
-                                         }, completion: {
-                                             DispatchQueue.main.async {
-                                                 self.navigateToPortfolioDisplay = true
-                                             }
-                                         })
+            viewModel.submitAnswersToAPI(
+                compiledJSON: compiledJSON,
+                onPortfolioReceived: { portfolio in
+                    displayViewModel.addPortfolio(portfolio)
+                },
+                completion: {
+                    DispatchQueue.main.async {
+                        isLoading = false // Stop the loading screen
+                        navigateToPortfolioDisplay = true // Navigate to the display view
+                    }
+                }
+            )
         }
     }
 
@@ -254,6 +243,10 @@ struct PortfolioGenerationView: View {
     }
 }
 
+
+
+
+
 #Preview {
     PortfolioGenerationView()
-}
+    }
