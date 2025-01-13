@@ -12,7 +12,9 @@ struct OnboardingView: View {
     @StateObject private var viewModel = QuestionViewModel()
     @State private var textAnswer: String = ""
     @State private var birthday: Date = Date() // For capturing birthday
-
+    @Environment(\.dismiss) var dismiss
+    @Binding var isSignedIn: Bool
+    
     var body: some View {
         VStack(spacing: 16) {
             // Progress Bar with Elephant Icon
@@ -70,6 +72,8 @@ struct OnboardingView: View {
                                 .padding()
                         } else {
                             TextField("Enter your answer", text: $textAnswer)
+                                .autocorrectionDisabled()
+                                .textInputAutocapitalization(.never)
                                 .padding()
                                 .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray))
                                 .padding()
@@ -123,8 +127,11 @@ struct OnboardingView: View {
                     Button("Submit") {
                         viewModel.submitAnswers { success in
                             if success {
+                                isSignedIn = true
+                                dismiss()
                                 print("Signup successful!")
                             } else {
+                                isSignedIn = false
                                 print("Signup failed.")
                             }
                         }
@@ -156,5 +163,5 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    OnboardingView()
+    OnboardingView(isSignedIn: .constant(true))
 }

@@ -152,7 +152,7 @@ class PortfolioGenerationViewModel: ObservableObject {
 
     // Fetch user profile from the API
     func fetchUserProfile(email: String, completion: @escaping (Error?) -> Void) {
-        guard let url = URL(string: "http://127.0.0.1:3000/api/users/user/\(email)") else {
+        guard let url = URL(string: "https://app.finabl.org/api/users/user/\(email)") else {
             completion(NSError(domain: "InvalidURL", code: 400, userInfo: nil))
             return
         }
@@ -262,7 +262,7 @@ class PortfolioGenerationViewModel: ObservableObject {
 
     // Submit answers to the API
     func submitAnswersToAPI(compiledJSON: [String: Any], onPortfolioReceived: @escaping ([String: Any]) -> Void, completion: @escaping () -> Void) {
-        guard let url = URL(string: "http://localhost:3000/api/generate-portfolios") else {
+        guard let url = URL(string: "https://app.finabl.org/api/generate-portfolios") else {
             print("Invalid URL for portfolio submission.")
             completion()
             return

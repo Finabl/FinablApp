@@ -10,6 +10,9 @@ struct SocialHubView: View {
     @State private var isSignedIn: Bool = false
     @State private var userEmail: String? = nil
     @State private var isSettingsActive: Bool = false
+    @State private var showSignInView: Bool = false
+    @State private var showSignUpView: Bool = false
+    
 
     var body: some View {
         NavigationStack {
@@ -28,7 +31,7 @@ struct SocialHubView: View {
                         
                         Button(action: {
                             // Navigate to SignInView
-                            SignInView()
+                            showSignInView.toggle()
                         }) {
                             Text("Sign In")
                                 .font(Font.custom("Anuphan-Medium", size: 16))
@@ -37,11 +40,13 @@ struct SocialHubView: View {
                                 .background(Color.blue)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
+                        }.sheet(isPresented: $showSignInView) {
+                            SignInView(isSignedIn: $isSignedIn)
                         }
                         
                         Button(action: {
                             // Navigate to SignUpView
-                            OnboardingView()
+                            showSignUpView.toggle()
                         }) {
                             Text("Sign Up")
                                 .font(Font.custom("Anuphan-Medium", size: 16))
@@ -51,6 +56,8 @@ struct SocialHubView: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
+                    }.sheet(isPresented: $showSignUpView) {
+                        OnboardingView(isSignedIn: $isSignedIn)
                     }
                     .padding()
                 } else {
@@ -196,7 +203,7 @@ struct SocialHubView: View {
                 }
             }
         }
-        .padding(.top)
+
         .onAppear {
             checkFirebaseAuth()
         }
@@ -220,7 +227,7 @@ struct SocialHubView: View {
             return
         }
         
-        guard let url = URL(string: "http://127.0.0.1:3000/api/users/user/\(email)") else {
+        guard let url = URL(string: "https://app.finabl.org/api/users/user/\(email)") else {
             print("Invalid URL")
             isLoading = false
             return

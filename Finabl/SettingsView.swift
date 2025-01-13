@@ -2,9 +2,9 @@ import SwiftUI
 import FirebaseAuth
 
 struct SettingsView: View {
-    @Environment(\.presentationMode) var presentationMode // To dismiss the view
-    @Binding var isSignedIn: Bool // Binding to update the signed-in status in SocialHubView
-    @State private var isSigningOut: Bool = false // To show a loading indicator during sign-out
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var isSignedIn: Bool
+    @State private var isSigningOut: Bool = false 
 
     var body: some View {
         NavigationView {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A1489172D2F3FDB00060FC2 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1489162D2F3FDB00060FC2 /* SocketIO */; };
+		6A80AEE32D30D28F0005AB08 /* LinkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A80AEE22D30D28F0005AB08 /* LinkKit */; };
 		6AA3B78C2D1CD087004A785C /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B78B2D1CD087004A785C /* FirebaseAnalytics */; };
 		6AA3B78E2D1CD087004A785C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B78D2D1CD087004A785C /* FirebaseAuth */; };
 		6AA3B7902D1CD087004A785C /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B78F2D1CD087004A785C /* FirebaseCore */; };
@@ -41,29 +43,17 @@
 		6AA3B7962D1CF338004A785C /* Exceptions for "Finabl" folder in "Finabl" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				.swift,
 				Info.plist,
 			);
 			target = 6A63F0452D179649002F4BC8 /* Finabl */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		6A8029392D2B9B2E003BE546 /* Exceptions for "Finabl" folder in "Compile Sources" phase from "Finabl" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 6A63F0422D179649002F4BC8 /* Sources */;
-			membershipExceptions = (
-				.swift,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6A63F0482D179649002F4BC8 /* Finabl */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				6AA3B7962D1CF338004A785C /* Exceptions for "Finabl" folder in "Finabl" target */,
-				6A8029392D2B9B2E003BE546 /* Exceptions for "Finabl" folder in "Compile Sources" phase from "Finabl" target */,
 			);
 			path = Finabl;
 			sourceTree = "<group>";
@@ -87,9 +77,11 @@
 			files = (
 				6AA3B78C2D1CD087004A785C /* FirebaseAnalytics in Frameworks */,
 				6AA3B7902D1CD087004A785C /* FirebaseCore in Frameworks */,
+				6A80AEE32D30D28F0005AB08 /* LinkKit in Frameworks */,
 				6AA3B7922D1CD087004A785C /* FirebaseDatabase in Frameworks */,
 				6AA3B7942D1CD087004A785C /* FirebaseFirestore in Frameworks */,
 				6AA3B78E2D1CD087004A785C /* FirebaseAuth in Frameworks */,
+				6A1489172D2F3FDB00060FC2 /* SocketIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,6 +147,8 @@
 				6AA3B78F2D1CD087004A785C /* FirebaseCore */,
 				6AA3B7912D1CD087004A785C /* FirebaseDatabase */,
 				6AA3B7932D1CD087004A785C /* FirebaseFirestore */,
+				6A1489162D2F3FDB00060FC2 /* SocketIO */,
+				6A80AEE22D30D28F0005AB08 /* LinkKit */,
 			);
 			productName = Finabl;
 			productReference = 6A63F0462D179649002F4BC8 /* Finabl.app */;
@@ -240,6 +234,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				6A1489152D2F3FDB00060FC2 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
+				6A80AEE12D30D28F0005AB08 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6A63F0472D179649002F4BC8 /* Products */;
@@ -438,7 +434,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Finabl/Preview Content\"";
-				DEVELOPMENT_TEAM = JCG7546B29;
+				DEVELOPMENT_TEAM = X4MH4CHK56;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -458,7 +454,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Finabl.Finabl;
+				PRODUCT_BUNDLE_IDENTIFIER = org.Finabl.Finabl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -479,7 +475,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Finabl/Preview Content\"";
-				DEVELOPMENT_TEAM = JCG7546B29;
+				DEVELOPMENT_TEAM = X4MH4CHK56;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -499,7 +495,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Finabl.Finabl;
+				PRODUCT_BUNDLE_IDENTIFIER = org.Finabl.Finabl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -643,6 +639,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6A1489152D2F3FDB00060FC2 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		6A80AEE12D30D28F0005AB08 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/plaid/plaid-link-ios-spm";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -654,6 +666,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6A1489162D2F3FDB00060FC2 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A1489152D2F3FDB00060FC2 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */;
+			productName = SocketIO;
+		};
+		6A80AEE22D30D28F0005AB08 /* LinkKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A80AEE12D30D28F0005AB08 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */;
+			productName = LinkKit;
+		};
 		6AA3B78B2D1CD087004A785C /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

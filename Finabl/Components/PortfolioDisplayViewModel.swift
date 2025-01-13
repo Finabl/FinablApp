@@ -21,7 +21,7 @@ class PortfolioDisplayViewModel: ObservableObject {
 
     // Fetch portfolios one by one
     func fetchPortfolios() {
-        guard let url = URL(string: "http://localhost:3000/api/generate-portfolios") else {
+        guard let url = URL(string: "https://app.finabl.org/api/generate-portfolios") else {
             print("Invalid URL")
             return
         }

@@ -114,7 +114,7 @@ class LearningGoalsAssessmentViewModel: ObservableObject {
             return
         }
 
-        let urlString = "http://127.0.0.1:3000/api/users/user/\(email)/add"
+        let urlString = "https://app.finabl.org/api/users/user/\(email)/add"
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
             completion(false)

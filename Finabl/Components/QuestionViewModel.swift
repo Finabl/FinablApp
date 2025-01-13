@@ -129,7 +129,7 @@ class QuestionViewModel: ObservableObject {
     }
 
     private func postAnswersToAPI(apiData: [String: Any], completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: "http://127.0.0.1:3000/api/users/register") else {
+        guard let url = URL(string: "https://app.finabl.org/api/users/register") else {
             completion(false)
             return
         }

@@ -3,6 +3,7 @@ import FirebaseAuth
 
 struct SignInView: View {
     @Environment(\.presentationMode) var presentationMode // For dismissing the view
+    @Binding var isSignedIn: Bool
     @State private var email = ""
     @State private var password = ""
     @State private var errorMessage = ""
@@ -52,13 +53,14 @@ struct SignInView: View {
             }
 
             // User signed in successfully
+            isSignedIn = true
             self.fetchUserData()
         }
     }
 
     private func fetchUserData() {
         // Create the URL
-        guard let url = URL(string: "http://127.0.0.1:3000/api/users/user/\(email)") else {
+        guard let url = URL(string: "https://app.finabl.org/api/users/user/\(email)") else {
             self.errorMessage = "Invalid URL"
             return
         }
@@ -92,5 +94,5 @@ struct SignInView: View {
 
 
 #Preview {
-    SignInView()
+    SignInView(isSignedIn: .constant(true))
 }

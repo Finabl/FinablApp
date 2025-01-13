@@ -13,7 +13,6 @@ struct PortfolioDisplayView: View {
     @State private var isModalExpanded: Bool = false
     @State private var selectedGeneralExplanation: String = ""
     
-
     var body: some View {
         NavigationView {
             ZStack {
@@ -29,9 +28,6 @@ struct PortfolioDisplayView: View {
                     if viewModel.portfolios.isEmpty {
                         // Loading View
                         Text("There was an error generating portfolios. Please try again later.")
-                        /*ProgressView("Generating portfolios...")
-                            .font(Font.custom("Anuphan-Regular", size: 20))
-                            .padding()*/
                             
                     } else {
                         Spacer()
@@ -54,7 +50,7 @@ struct PortfolioDisplayView: View {
                     }
                 }
                 .navigationBarTitle("", displayMode: .inline)
-                .blur(radius: isModalExpanded ? 10 : 0) // Blur the background when modal is expanded
+                .blur(radius: isModalExpanded ? 10 : 0)
 
                 // Expandable Modal
                 if isModalExpanded {
@@ -103,7 +99,7 @@ struct PortfolioDetailView: View {
 
                 // Why this portfolio
                 HStack(spacing: 10) {
-                    Image("elephant head") // Replace with actual logo asset
+                    Image("elephant head") 
                         .resizable()
                         .frame(width: 60, height: 60)
                         .background(Color(hex: 0xF3FCFF))
@@ -246,7 +242,7 @@ struct PortfolioListItemView: View {
                 }
                 Spacer()
                 Button(action: {
-                    onExpand(portfolio.generalExplanation) // Pass general explanation to callback
+                    onExpand(portfolio.generalExplanation)
                 }) {
                     Image(systemName: "chevron.right")
                         .foregroundColor(.gray)
@@ -262,7 +258,7 @@ struct PortfolioListItemView: View {
 
 struct ModalView: View {
     @Binding var isModalExpanded: Bool
-    let generalExplanation: String // Accept general explanation
+    let generalExplanation: String
 
     var body: some View {
         GeometryReader { geometry in
@@ -301,8 +297,7 @@ struct ModalView: View {
 
                             
                         }
-                        //.padding()
-                        Text(generalExplanation) // Display the general explanation
+                        Text(generalExplanation)
                             .font(Font.custom("Anuphan-Regular", size: 16))
                             .foregroundColor(Color.white.opacity(0.95))
                             .multilineTextAlignment(.leading)
@@ -344,20 +339,21 @@ extension Portfolio {
                 .init(ticker: "AMZN", allocation: "50%", riskLevel: "Moderate", justification: "Market leader."),
                 .init(ticker: "BND", allocation: "25%", riskLevel: "Low", justification: "Diversification.")
             ]
+        ),
+        Portfolio(
+            portfolioName: "Portfolio 1: Intermediate Portfolio",
+            generalExplanation: "Balanced risk and reward.",
+            timeHorizon: "1-3 years",
+            riskTolerance: "Moderate",
+            stocksETFs: [
+                .init(ticker: "TSLA", allocation: "25%", riskLevel: "High", justification: "Growth potential."),
+                .init(ticker: "AMZN", allocation: "50%", riskLevel: "Moderate", justification: "Market leader."),
+                .init(ticker: "BND", allocation: "25%", riskLevel: "Low", justification: "Diversification.")
+            ]
         )
     ]
 }
-extension Color {
-    init(hex: UInt, alpha: Double = 1) {
-        self.init(
-            .sRGB,
-            red: Double((hex >> 16) & 0xff) / 255,
-            green: Double((hex >> 08) & 0xff) / 255,
-            blue: Double((hex >> 00) & 0xff) / 255,
-            opacity: alpha
-        )
-    }
-}
+
 
 #Preview {
     PortfolioDisplayView(viewModel: PortfolioDisplayViewModel(portfolios: Portfolio.mockPortfolios))
