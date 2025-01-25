@@ -2,10 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Finabl needs access to your camera to allow you to send photos to other users!</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Finabl needs access to your photo libary to allow you to send photos to other users!</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Finabl needs access to your photo libary to allow you to add photos from other users!</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>data.sandbox.alpaca.market</key>
+			<string></string>
+		</dict>
 	</dict>
 	<key>UIAppFonts</key>
 	<array>

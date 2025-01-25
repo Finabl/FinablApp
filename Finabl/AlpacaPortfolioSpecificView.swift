@@ -27,13 +27,13 @@ struct AlpacaPortfolioSpecificView: View {
     init(portfolio: AlpacaPortfolio) {
         self.portfolio = portfolio
         // Create a Handler right away so Link can begin loading prior to the user pressing the button.
-        let createResult = createHandler()
+        /*let createResult = createHandler()
         switch createResult {
         case .failure(let createError):
             print("Link Creation Error: \(createError.localizedDescription)")
         case .success(let handler):
             linkController = LinkController(handler: handler)
-        }
+        }*/
     }
     
     var body: some View {
@@ -303,19 +303,22 @@ struct AlpacaPortfolioSpecificView: View {
                         ScrollView {
                             VStack(spacing: 1) {
                                 ForEach(portfolio.stocks, id: \.ticker) { stock in
-                                    HStack {
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text(stock.ticker)
-                                                .font(Font.custom("Anuphan-Bold", size: 16))
-                                            Text("\(stock.shares) shares")
-                                                .font(Font.custom("Anuphan-Regular", size: 14))
-                                                .foregroundColor(.gray)
-                                        }
-                                        Spacer()
-                                        Text("$\(String(format: "%.2f", stockPrices[stock.ticker] ?? 0.0))")
-                                            .font(Font.custom("Anuphan-Regular", size: 16))
-                                            //.foregroundColor(stock % 2 == 0 ? .green : .red)
+                                    NavigationLink(destination: AlpacaStockView(ticker: stock.ticker).navigationBarBackButtonHidden()) {
+                                        HStack {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text(stock.ticker)
+                                                    .font(Font.custom("Anuphan-Bold", size: 16))
+                                                Text("\(stock.shares) shares")
+                                                    .font(Font.custom("Anuphan-Regular", size: 14))
+                                                    .foregroundColor(.gray)
+                                            }
+                                            Spacer()
+
+                                            Text("$\(String(format: "%.2f", (Double(stock.shares) * (stockPrices[stock.ticker] ?? 0.0))))")
+                                                .font(Font.custom("Anuphan-Regular", size: 16))
                                     }
+                                    }
+                                    .foregroundStyle(.primary)
                                     .padding()
                                     .background(Color(UIColor.systemBackground))
                                     .cornerRadius(8)
@@ -521,37 +524,46 @@ struct AlpacaPortfolioSpecificView: View {
     }
     // Fetch stock price for a single ticker
     private func fetchStockPrice(for ticker: String) {
-        guard let url = URL(string: "https://app.finabl.org/api/stockData/quickStockData/\(ticker)") else {
-            print("Invalid URL for ticker: \(ticker)")
-            return
-        }
-        
+        let url = URL(string: "https://app.finabl.org/api/stockData/quickStockData/\(ticker)")!
         URLSession.shared.dataTask(with: url) { data, response, error in
-            guard error == nil, let data = data else {
-                print("Failed to fetch stock price for \(ticker): \(error?.localizedDescription ?? "Unknown error")")
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
                 return
             }
             
+            if let httpResponse = response as? HTTPURLResponse {
+                print("HTTP Status Code: \(httpResponse.statusCode)")
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            print("Raw response: \(String(data: data, encoding: .utf8) ?? "Invalid data")")
+            
             do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let price = json["price"] as? Double {
-                    print(price)
+                // Decode the data into an array of dictionaries
+                if let stockArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]],
+                   let stock = stockArray.first,
+                   let price = stock["price"] as? Double {
                     DispatchQueue.main.async {
-                        print("Parsed price for \(ticker): \(price)")
                         stockPrices[ticker] = price
+
                     }
+                } else {
+                    print("Failed to extract stock data from JSON")
                 }
             } catch {
-                print("Failed to decode stock price for \(ticker): \(error.localizedDescription)")
+                print("Failed to decode JSON: \(error)")
             }
         }.resume()
     }
-    private func createHandler() -> Result<Handler, Plaid.CreateError> {
+    /*private func createHandler() -> Result<Handler, Plaid.CreateError> {
         let configuration = createLinkTokenConfiguration()
 
         // This only results in an error if the token is malformed.
         return Plaid.create(configuration)
-    }
+    }*/
     private func initiateDeposit() {
         print(publicToken)
         guard let depositAmountDouble = Double(depositAmount) else {
@@ -583,7 +595,7 @@ struct AlpacaPortfolioSpecificView: View {
         }.resume()
     }
 
-    private func createLinkTokenConfiguration() -> LinkTokenConfiguration {
+    /*private func createLinkTokenConfiguration() -> LinkTokenConfiguration {
         // Steps to acquire a Link Token:
         //
         // 1. Sign up for a Plaid account to get an API key.
@@ -592,8 +604,7 @@ struct AlpacaPortfolioSpecificView: View {
         //      Ref - https://plaid.com/docs/quickstart/#introduction
         //      Ref - https://plaid.com/docs/api/tokens/#linktokencreate
 
-        #warning("Replace GENERATED_LINK_TOKEN below with your link_token")
-        let linkToken = "link-sandbox-63dce27f-d6ab-4477-b671-3b4fec6c0d80"
+        let linkToken = "n0token4u"
 
         // In your production application replace the hardcoded linkToken above with code that fetches a linkToken
         // from your backend server which in turn retrieves it securely from Plaid, for details please refer to
@@ -638,7 +649,7 @@ struct AlpacaPortfolioSpecificView: View {
         }
 
         return linkConfiguration
-    }
+    }*/
 }
 
 

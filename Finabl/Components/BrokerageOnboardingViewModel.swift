@@ -14,9 +14,18 @@ enum BrokerageQuestionType: Equatable {
     case multiSelect(options: [String])
     case link(url: String)
 }
+enum ActiveAlert: Identifiable {
+    case ageRestriction
+    case eligibilityRestriction
+
+    var id: Int {
+        hashValue
+    }
+}
 
 
 class BrokerageOnboardingViewModel: ObservableObject {
+    @Published var activeAlert: ActiveAlert?
     @Published var currentQuestionIndex: Int = 0
     @Published var selectedAnswers: [String] = []
     @Published var showAgeRestrictionAlert: Bool = false
@@ -28,8 +37,8 @@ class BrokerageOnboardingViewModel: ObservableObject {
     
     
     var questions: [(text: String, type: BrokerageQuestionType)] = [
-        ("First Legal Name", .text),
-        ("Last Legal Name", .text),
+        ("What is your Legal First Name?", .text),
+        ("What is your Legal Last Name?", .text),
         ("Date of Birth", .text),
         ("Street Address & Unit #", .text),
         ("City", .text),
@@ -65,11 +74,17 @@ class BrokerageOnboardingViewModel: ObservableObject {
     ]
 
     func goToNextQuestion() {
+        
         // Handle Age Restriction
         if currentQuestionIndex == 2 {
+            
+            if birthday == nil { // Use the default date if not set
+                birthday = Date()
+            }
+            
             guard let birthday = birthday else { return }
             if !isValidAge(birthday) {
-                showAgeRestrictionAlert = true
+                activeAlert = .ageRestriction
                 return
             }
         }
@@ -77,11 +92,11 @@ class BrokerageOnboardingViewModel: ObservableObject {
         // Citizenship Restriction
         if currentQuestionIndex == 7 {
             if selectedAnswers.contains("Yes") {
-                currentQuestionIndex += 2
+                currentQuestionIndex += 1
             }
         }
         if currentQuestionIndex == 8 && selectedAnswers.contains("No") {
-            showEligibilityRestrictionAlert = true
+            activeAlert = .eligibilityRestriction
             return
         }
 
@@ -127,6 +142,14 @@ class BrokerageOnboardingViewModel: ObservableObject {
         let calendar = Calendar.current
         let now = Date()
         let age = calendar.dateComponents([.year], from: date, to: now).year ?? 0
+
+        // Optional: Add a check to ensure the user has interacted with the DatePicker
+        if calendar.isDateInToday(date) {
+            print("saur sad")
+            return false // Require user interaction
+        }
+
         return age >= 18
     }
+
 }

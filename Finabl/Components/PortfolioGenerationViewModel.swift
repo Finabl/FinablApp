@@ -262,7 +262,7 @@ class PortfolioGenerationViewModel: ObservableObject {
 
     // Submit answers to the API
     func submitAnswersToAPI(compiledJSON: [String: Any], onPortfolioReceived: @escaping ([String: Any]) -> Void, completion: @escaping () -> Void) {
-        guard let url = URL(string: "https://app.finabl.org/api/generate-portfolios") else {
+        guard let url = URL(string: "https://app.finabl.org/api/portfolios/generate-portfolios") else {
             print("Invalid URL for portfolio submission.")
             completion()
             return

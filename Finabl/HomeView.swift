@@ -117,18 +117,32 @@ struct HomeView: View {
     let greenColor = Color(hex: 0x30E7D1)
     var body: some View {
         VStack {
-            // Top Navigation Bar
             HStack {
-                Image("elephant head")
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                Text("Finabl")
-                    .font(Font.custom("Anuphan-Medium", size: 18))
-                    .foregroundColor(.primary)
                 Spacer()
-                
+                NavigationLink(destination: NotifView().navigationBarBackButtonHidden()) {
+                    ZStack {
+                        Circle()
+                            .frame(width: 40, height: 40)
+                            .foregroundStyle(Color(hex: 0xF7F7F7))
+                        Image("notif")
+                            .resizable()
+                            .foregroundStyle(Color(hex: 0x656D72))
+                            .frame(width: 25, height: 25)
+                    }
+                }
+                NavigationLink(destination: WalletView().navigationBarBackButtonHidden()) {
+                    ZStack {
+                        Circle()
+                            .frame(width: 40, height: 40)
+                            .foregroundStyle(Color(hex: 0xF7F7F7))
+                        Image("wallet")
+                            .resizable()
+                            .foregroundStyle(Color(hex: 0x656D72))
+                            .frame(width: 25, height: 25)
+                    }
+                }
             }
-            .padding(.horizontal)
+            .padding([.horizontal, .bottom])
         }
         ScrollView {
             VStack(alignment: .leading, spacing: 5) {
@@ -144,7 +158,7 @@ struct HomeView: View {
                         Text("Overall growth")
                             .font(Font.custom("Anuphan-Medium", size: 14))
                             .foregroundColor(.gray)
-                        Text("+$50.00")
+                        Text("+$00.00")
                             .font(Font.custom("Anuphan-Medium", size: 24))
                         ProgressView(value: 0.3)
                             .progressViewStyle(LinearProgressViewStyle(tint: Color(greenColor)))
@@ -154,11 +168,17 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 VStack {
-                    Rectangle()
-                        .fill(Color(UIColor.systemGray4))
-                        .frame(height: 200)
-                        .frame(maxWidth: .infinity)
-                        .cornerRadius(8)
+                    ZStack {
+                        Rectangle()
+                            .fill(Color(UIColor.systemGray4))
+                            .frame(height: 200)
+                            .frame(maxWidth: .infinity)
+                            .cornerRadius(8)
+                        Text("You have no portfolios yet!")
+                            .foregroundStyle(.white)
+                        
+                    }
+
                     
                 }.padding()
                 // Portfolios Section
@@ -167,45 +187,76 @@ struct HomeView: View {
                         Text("Portfolios")
                             .font(Font.custom("Anuphan-Bold", size: 18))
                         Spacer()
-                        NavigationLink(destination: AlpacaPortfolioListView(portfolios: portfolios).navigationBarBackButtonHidden(true)) {
-                            Text("See all")
-                                .font(Font.custom("Anuphan-Regular", size: 14))
-                                .foregroundColor(.blue)
+                        if !portfolios.isEmpty {
+                            NavigationLink(destination: AlpacaPortfolioListView(portfolios: portfolios).navigationBarBackButtonHidden(true)) {
+                                Text("See all")
+                                    .font(Font.custom("Anuphan-Regular", size: 14))
+                                    .foregroundColor(.blue)
+                            }
                         }
+
                     }
                     .padding(.horizontal)
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
-                            ForEach(portfolios) { portfolio in
-                                VStack(alignment: .leading, spacing: 10) {
-                                    Text(portfolio.portfolioName)
-                                        .font(Font.custom("Anuphan-Regular", size: 14))
-                                        .foregroundColor(.gray)
-                                    //Text("$\(String(format: "%.2f", portfolio.balance))")
-                                      //  .font(Font.custom("Anuphan-Bold", size: 18))
-
-
-                                    HStack {
-                                        Spacer()
-                                        VStack {
-                                            Image(systemName: "chart.line.uptrend.xyaxis")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(height: 50)
-                                                .foregroundColor(.green)
-                                            //Text("\(portfolio.growth > 0 ? "+" : "")\(String(format: "%.2f", portfolio.growth))%")
-                                             //   .font(Font.custom("Anuphan-Regular", size: 14))
-                                              //  .foregroundColor(.green)
-                                        }
-                                    }.frame(maxWidth: .infinity)
+                            if portfolios.isEmpty {
+                                VStack(alignment: .center) {
+                                    Text("You have no portfolios!")
+                                        .foregroundStyle(.secondary)
+                                        .font(Font.custom("Anuphan-Bold", size: 16))
+                                    NavigationLink(destination: PortfolioGenerationView()) {
+                                        Text("Create One Now")
+                                            .font(Font.custom("Anuphan-Medium", size: 14))
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(Color.blue)
+                                            .foregroundColor(.white)
+                                            .cornerRadius(10)
+                                        
+                                    }.padding(.bottom)
 
                                 }
-                                .frame(width: 150, alignment: .leading)
-                                .padding()
-                                .background(Color(UIColor.systemGray6))
-                                .cornerRadius(10)
+                                
+
+                            } else {
+                                ForEach(portfolios) { portfolio in
+                                    
+                                    NavigationLink(destination: AlpacaPortfolioSpecificView(portfolio: portfolio).navigationBarBackButtonHidden()) {
+                                        VStack(alignment: .leading, spacing: 10) {
+                                            Text(portfolio.portfolioName)
+                                                .font(Font.custom("Anuphan-Regular", size: 14))
+                                                .foregroundColor(.gray)
+                                            //Text("$\(String(format: "%.2f", portfolio.balance))")
+                                              //  .font(Font.custom("Anuphan-Bold", size: 18))
+
+
+                                            HStack {
+                                                Spacer()
+                                                VStack {
+                                                    Image(systemName: "chart.line.uptrend.xyaxis")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(height: 50)
+                                                        .foregroundColor(.green)
+                                                    //Text("\(portfolio.growth > 0 ? "+" : "")\(String(format: "%.2f", portfolio.growth))%")
+                                                     //   .font(Font.custom("Anuphan-Regular", size: 14))
+                                                      //  .foregroundColor(.green)
+                                                }
+                                            }.frame(maxWidth: .infinity)
+
+                                        }
+                                        .frame(width: 150, alignment: .leading)
+                                        .padding()
+                                        .background(Color(UIColor.systemGray6))
+                                        .cornerRadius(10)
+                                    }
+
+                                }
+                                
                             }
+                            
+
                         }
                         .padding(.horizontal)
                     }
@@ -369,6 +420,7 @@ struct HomeView: View {
                     self.portfolios = decodedResponse.portfolios
                 }
             } catch {
+                self.portfolios = []
                 print("Error decoding portfolio JSON: \(error)")
             }
         }.resume()

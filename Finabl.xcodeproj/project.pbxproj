@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6A1489172D2F3FDB00060FC2 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1489162D2F3FDB00060FC2 /* SocketIO */; };
+		6A3E67112D3C4D57005D6339 /* StreamChatSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6A3E67102D3C4D57005D6339 /* StreamChatSwiftUI */; };
 		6A80AEE32D30D28F0005AB08 /* LinkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A80AEE22D30D28F0005AB08 /* LinkKit */; };
 		6AA3B78C2D1CD087004A785C /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B78B2D1CD087004A785C /* FirebaseAnalytics */; };
 		6AA3B78E2D1CD087004A785C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B78D2D1CD087004A785C /* FirebaseAuth */; };
@@ -75,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A3E67112D3C4D57005D6339 /* StreamChatSwiftUI in Frameworks */,
 				6AA3B78C2D1CD087004A785C /* FirebaseAnalytics in Frameworks */,
 				6AA3B7902D1CD087004A785C /* FirebaseCore in Frameworks */,
 				6A80AEE32D30D28F0005AB08 /* LinkKit in Frameworks */,
@@ -149,6 +151,7 @@
 				6AA3B7932D1CD087004A785C /* FirebaseFirestore */,
 				6A1489162D2F3FDB00060FC2 /* SocketIO */,
 				6A80AEE22D30D28F0005AB08 /* LinkKit */,
+				6A3E67102D3C4D57005D6339 /* StreamChatSwiftUI */,
 			);
 			productName = Finabl;
 			productReference = 6A63F0462D179649002F4BC8 /* Finabl.app */;
@@ -236,6 +239,7 @@
 				6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				6A1489152D2F3FDB00060FC2 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
 				6A80AEE12D30D28F0005AB08 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */,
+				6A3E670F2D3C4D57005D6339 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6A63F0472D179649002F4BC8 /* Products */;
@@ -647,6 +651,14 @@
 				kind = branch;
 			};
 		};
+		6A3E670F2D3C4D57005D6339 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getstream/stream-chat-swiftui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.70.0;
+			};
+		};
 		6A80AEE12D30D28F0005AB08 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/plaid/plaid-link-ios-spm";
@@ -670,6 +682,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A1489152D2F3FDB00060FC2 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */;
 			productName = SocketIO;
+		};
+		6A3E67102D3C4D57005D6339 /* StreamChatSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A3E670F2D3C4D57005D6339 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */;
+			productName = StreamChatSwiftUI;
 		};
 		6A80AEE22D30D28F0005AB08 /* LinkKit */ = {
 			isa = XCSwiftPackageProductDependency;
