@@ -49,7 +49,7 @@ struct Transaction: Codable {
 
 struct AlpacaPortfolioListView: View {
     @Environment(\.presentationMode) var presentationMode // To dismiss the current view
-    
+    var titleToUse: String
     var portfolios: [AlpacaPortfolio]
     
     var body: some View {
@@ -64,7 +64,7 @@ struct AlpacaPortfolioListView: View {
                         .foregroundColor(.primary)
                 }
                 Spacer()
-                Text("Portfolios")
+                Text(titleToUse)
                     .font(Font.custom("Anuphan-Medium", size: 18))
                     .foregroundColor(.primary)
                 Spacer()
@@ -159,7 +159,7 @@ struct AlpacaPortfolioListView: View {
 }
 
 #Preview {
-    AlpacaPortfolioListView(portfolios: [
+    AlpacaPortfolioListView(titleToUse: "Portfolios", portfolios: [
         AlpacaPortfolio(
             portfolioId: "uuid1",
             portfolioName: "Tech Stocks",

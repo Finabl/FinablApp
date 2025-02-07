@@ -12,7 +12,107 @@ struct SocialHubView: View {
     @State private var isSettingsActive: Bool = false
     @State private var showSignInView: Bool = false
     @State private var showSignUpView: Bool = false
-    
+    @State private var portfolios = [
+        AlpacaPortfolio(
+            portfolioId: "uuid1",
+            portfolioName: "Tech Stocks",
+            usernames: ["user1@example.com", "user2@example.com"],
+            alpacaId: "alpaca123",
+            stockAllocation: [
+                StockAllocation(ticker: "AAPL", percentage: 0.5, shares: 10),
+                StockAllocation(ticker: "MSFT", percentage: 0.3, shares: 15),
+                StockAllocation(ticker: "GOOGL", percentage: 0.2, shares: 5)
+            ],
+            stocks: [
+                Stock(ticker: "AAPL", shares: 10),
+                Stock(ticker: "MSFT", shares: 15)
+            ],
+            transactions: [
+                Transaction(
+                    id: "txn1",
+                    shares: 5,
+                    ticker: "AAPL",
+                    dollarAmount: 750.0,
+                    datetime: "2025-01-03T12:00:00Z",
+                    type: "buy"
+                ),
+                Transaction(
+                    id: "txn2",
+                    shares: 3,
+                    ticker: "MSFT",
+                    dollarAmount: 500.0,
+                    datetime: "2025-01-04T14:00:00Z",
+                    type: "sell"
+                )
+            ]
+        ),
+        AlpacaPortfolio(
+            portfolioId: "uuid2",
+            portfolioName: "asdfasf Stocks",
+            usernames: ["user1@example.com", "user2@example.com"],
+            alpacaId: "alpaca123",
+            stockAllocation: [
+                StockAllocation(ticker: "AAPL", percentage: 0.5, shares: 10),
+                StockAllocation(ticker: "MSFT", percentage: 0.3, shares: 15),
+                StockAllocation(ticker: "GOOGL", percentage: 0.2, shares: 5)
+            ],
+            stocks: [
+                Stock(ticker: "AAPL", shares: 10),
+                Stock(ticker: "MSFT", shares: 15)
+            ],
+            transactions: [
+                Transaction(
+                    id: "txn1",
+                    shares: 5,
+                    ticker: "AAPL",
+                    dollarAmount: 750.0,
+                    datetime: "2025-01-03T12:00:00Z",
+                    type: "buy"
+                ),
+                Transaction(
+                    id: "txn2",
+                    shares: 3,
+                    ticker: "MSFT",
+                    dollarAmount: 500.0,
+                    datetime: "2025-01-04T14:00:00Z",
+                    type: "sell"
+                )
+            ]
+        ),
+        AlpacaPortfolio(
+            portfolioId: "uuid3",
+            portfolioName: "adfasdf Stocks",
+            usernames: ["user1@example.com", "user2@example.com"],
+            alpacaId: "alpaca123",
+            stockAllocation: [
+                StockAllocation(ticker: "AAPL", percentage: 0.5, shares: 10),
+                StockAllocation(ticker: "MSFT", percentage: 0.3, shares: 15),
+                StockAllocation(ticker: "GOOGL", percentage: 0.2, shares: 5)
+            ],
+            stocks: [
+                Stock(ticker: "AAPL", shares: 10),
+                Stock(ticker: "MSFT", shares: 15)
+            ],
+            transactions: [
+                Transaction(
+                    id: "txn1",
+                    shares: 5,
+                    ticker: "AAPL",
+                    dollarAmount: 750.0,
+                    datetime: "2025-01-03T12:00:00Z",
+                    type: "buy"
+                ),
+                Transaction(
+                    id: "txn2",
+                    shares: 3,
+                    ticker: "MSFT",
+                    dollarAmount: 500.0,
+                    datetime: "2025-01-04T14:00:00Z",
+                    type: "sell"
+                )
+            ]
+        )
+    ]
 
     var body: some View {
         NavigationStack {
@@ -88,10 +188,13 @@ struct SocialHubView: View {
                         ScrollView {
                             // Profile Info Section
                             VStack(spacing: 8) {
-                                Circle()
+                                Image("defaultpfp")
+                                    .resizable()
+                                    .frame(width: 80, height: 80)
+                                /*Circle()
                                     .fill(Color.gray.opacity(0.3))
                                     .frame(width: 80, height: 80) // Placeholder for profile image
-                                
+                                */
                                 Text(displayName)
                                     .font(Font.custom("Anuphan-Medium", size: 24))
                                     .foregroundColor(.primary)
@@ -139,9 +242,7 @@ struct SocialHubView: View {
                                     .cornerRadius(8)
                                     
                                 }
-                                Button(action: {
-                                    // Collaborative portfolios action
-                                }) {
+                                NavigationLink(destination: AlpacaPortfolioListView(titleToUse: "Collaborative Portfolios", portfolios: portfolios).navigationBarBackButtonHidden()) {
                                     VStack {
                                         Image(systemName: "person.2.fill")
                                             .font(.system(size: 24))
@@ -156,6 +257,7 @@ struct SocialHubView: View {
                                     .foregroundColor(.white)
                                     .cornerRadius(8)
                                 }
+                                
                                 
                                 Button(action: {
                                     // Competition action
@@ -214,6 +316,7 @@ struct SocialHubView: View {
             userEmail = user.email
             isSignedIn = true
             fetchUserData()
+            fetchPortfolios(email: userEmail!)
         } else {
             isSignedIn = false
             isLoading = false
@@ -262,6 +365,38 @@ struct SocialHubView: View {
             }
         }.resume()
     }
+    private func fetchPortfolios(email: String) {
+        guard let url = URL(string: "https://app.finabl.org/api/portfolios/user-portfolios?email=\(email)") else {
+            print("Invalid URL for fetching portfolios")
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("Error fetching portfolios: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No data received for portfolios")
+                return
+            }
+
+            do {
+                // Decode the root response first
+                let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+                let decodedResponse = try JSONDecoder().decode(RootResponse.self, from: data)
+                DispatchQueue.main.async {
+                    // Access the portfolios array from the decoded response
+                    self.portfolios = decodedResponse.portfolios
+                }
+            } catch {
+                self.portfolios = []
+                print("Error decoding portfolio JSON: \(error)")
+            }
+        }.resume()
+    }
+    
 }
 
 

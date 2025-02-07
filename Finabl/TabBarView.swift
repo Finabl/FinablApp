@@ -30,13 +30,14 @@ struct TabBarView: View {
 
             // Search Tab
             NavigationStack {
+                TradingSimulatorView()
                 //RealTimeLineChartView()
                 //StockCandlestickView()
-                VStack {
+                /*VStack {
                     Text("Search")
                         .font(Font.custom("Anuphan-Light", size: 24))
                         .padding()
-                }
+                }*/
             }
             .tabItem {
                 VStack {

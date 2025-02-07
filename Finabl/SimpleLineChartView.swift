@@ -29,7 +29,7 @@ struct StockLineChartView: View {
             if isLoading {
                 Text("Loading data...")
                     .onAppear {
-                        fetchData(timeframeInput: "1day")
+                        fetchData()
                     }
             } else if lineChartData.isEmpty {
                 Text("No data available")
@@ -41,8 +41,17 @@ struct StockLineChartView: View {
         }
     }
 
-    private func fetchData(timeframeInput: String) {
-        fmpAPI.fetchLineChartData(symbol: "AAPL", timeframe: timeframeInput) { result in
+    private func fetchData() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        let today = Date()
+        let pastDate = Calendar.current.date(byAdding: .day, value: -5, to: today)! // Example: 5-day history
+
+        let fromDate = dateFormatter.string(from: pastDate)
+        let toDate = dateFormatter.string(from: today)
+
+        fmpAPI.fetchLineChartData(symbol: "AAPL", from: fromDate, to: toDate) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
@@ -54,6 +63,7 @@ struct StockLineChartView: View {
             }
         }
     }
+
 }
 
 // MARK: - SwiftUI Line Chart

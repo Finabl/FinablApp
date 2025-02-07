@@ -9,8 +9,23 @@ import SwiftUI
 import FirebaseAuth
 
 struct HomeView: View {
-    @State private var firstName: String = "Sid" // Default placeholder for firstName
-    @State private var isLoading: Bool = true
+    @State private var firstName: String = "Gursharan" // Default placeholder for firstName
+    @State private var stockPrice: String = "$0.00"
+    @State private var lineChartData: [Candlestick] = []
+    @State private var isLoading = true
+    private let fmpAPI = FMPAPI()
+    // Mapping for date ranges
+    private let timeRangeMapping: [String: Int] = [
+        "1D": 1,
+        "5D": 5,
+        "1M": 30,
+        "3M": 90,
+        "1Y": 365,
+        "3Y": 1095,
+        "Max": 1825
+    ]
+    @State private var selectedTimeRange: String = "1D"
+    @State private var titleToUseForPortfolios: String = "Portfolios" // Default placeholder for firstName
     @State private var errorMessage: String? = nil
     @State private var portfolios = [
         AlpacaPortfolio(
@@ -158,7 +173,7 @@ struct HomeView: View {
                         Text("Overall growth")
                             .font(Font.custom("Anuphan-Medium", size: 14))
                             .foregroundColor(.gray)
-                        Text("+$00.00")
+                        Text("+ \(stockPrice)")
                             .font(Font.custom("Anuphan-Medium", size: 24))
                         ProgressView(value: 0.3)
                             .progressViewStyle(LinearProgressViewStyle(tint: Color(greenColor)))
@@ -168,15 +183,21 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 VStack {
-                    ZStack {
-                        Rectangle()
-                            .fill(Color(UIColor.systemGray4))
+                    if isLoading {
+                        Text("Loading data...")
+                            .onAppear {
+                                fetchData()
+                                fetchStockData()
+                                print("hai")
+                            }
+                    } else if lineChartData.isEmpty {
+                        Text("No data available")
+                    } else {
+                       LineChart(data: lineChartData)
                             .frame(height: 200)
-                            .frame(maxWidth: .infinity)
-                            .cornerRadius(8)
-                        Text("You have no portfolios yet!")
-                            .foregroundStyle(.white)
-                        
+                            .cornerRadius(10)
+                            .background(.blue.opacity(0.2))
+                            //.padding()
                     }
 
                     
@@ -188,7 +209,7 @@ struct HomeView: View {
                             .font(Font.custom("Anuphan-Bold", size: 18))
                         Spacer()
                         if !portfolios.isEmpty {
-                            NavigationLink(destination: AlpacaPortfolioListView(portfolios: portfolios).navigationBarBackButtonHidden(true)) {
+                            NavigationLink(destination: AlpacaPortfolioListView(titleToUse: titleToUseForPortfolios,portfolios: portfolios).navigationBarBackButtonHidden(true)) {
                                 Text("See all")
                                     .font(Font.custom("Anuphan-Regular", size: 14))
                                     .foregroundColor(.blue)
@@ -422,6 +443,66 @@ struct HomeView: View {
             } catch {
                 self.portfolios = []
                 print("Error decoding portfolio JSON: \(error)")
+            }
+        }.resume()
+    }
+    private func fetchData() {
+        guard let days = timeRangeMapping[selectedTimeRange] else { return }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let today = Date()
+        let pastDate = Calendar.current.date(byAdding: .day, value: -days, to: today)!
+        
+        let fromDate = dateFormatter.string(from: pastDate)
+        let toDate = dateFormatter.string(from: today)
+        
+        fmpAPI.fetchLineChartData(symbol: "AAPL", from: fromDate, to: toDate) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    self.lineChartData = data
+                case .failure(let error):
+                    print("Error fetching data: \(error)")
+                }
+                self.isLoading = false
+            }
+        }
+    }
+    func fetchStockData() {
+        let url = URL(string: "https://app.finabl.org/api/stockData/detailedStockData/AAPL")!
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                print("HTTP Status Code: \(httpResponse.statusCode)")
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            print("Raw response: \(String(data: data, encoding: .utf8) ?? "Invalid data")")
+            
+            do {
+                // Decode the data into an array of dictionaries
+                if let stockArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]],
+                   let stock = stockArray.first,
+                   let price = stock["price"] as? Double, let description = stock["description"] as? String {
+                    print("Stock data decoded: \(stock)")
+                    DispatchQueue.main.async {
+                        self.stockPrice = String(format: "$%.2f", price)
+                        print("Updated stock price: \(self.stockPrice)")
+                    }
+                } else {
+                    print("Failed to extract stock data from JSON")
+                }
+            } catch {
+                print("Failed to decode JSON: \(error)")
             }
         }.resume()
     }

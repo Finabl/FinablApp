@@ -10,18 +10,31 @@ import LinkKit
 import FirebaseAuth
 
 struct AlpacaPortfolioSpecificView: View {
+    @State private var selectedTimeRange: String = "1D"
+    @State private var isLoading = true
     @State private var email: String = "user@example.com"
     var portfolio: AlpacaPortfolio
     @SwiftUI.Environment(\.presentationMode) var presentationMode
     @State private var stockPrices: [String: Double] = [:] // Holds stock prices for each ticker
     let publicToken = UserDefaults.standard.string(forKey: "PlaidPublicToken") ?? ""
     let accountId = UserDefaults.standard.string(forKey: "PlaidAccountId") ?? ""
-    
+    @State private var lineChartData: [Candlestick] = []
+
     @State private var selectedTab: String = "Overview" // Tracks the selected tab
     @State private var depositAmount: String = "100" // For entering deposit amounts
     @State private var isTransferInProgress = false // Tracks transfer progress
     @State private var isPresentingLink = false
-
+    private let fmpAPI = FMPAPI()
+    // Mapping for date ranges
+    private let timeRangeMapping: [String: Int] = [
+        "1D": 1,
+        "5D": 5,
+        "1M": 30,
+        "3M": 90,
+        "1Y": 365,
+        "3Y": 1095,
+        "Max": 1825
+    ]
     private var linkController: LinkController?
 
     init(portfolio: AlpacaPortfolio) {
@@ -139,10 +152,25 @@ struct AlpacaPortfolioSpecificView: View {
                             
                             // Line Chart Placeholder
                             VStack {
-                                Rectangle()
+                                /*Rectangle()
                                     .fill(Color(UIColor.systemGray6))
                                     .frame(height: 200)
-                                    .cornerRadius(10)
+                                    .cornerRadius(10)*/
+                                if isLoading {
+                                    Text("Loading data...")
+                                        .onAppear {
+                                            fetchData()
+                                            print("hai")
+                                        }
+                                } else if lineChartData.isEmpty {
+                                    Text("No data available")
+                                } else {
+                                   LineChart(data: lineChartData)
+                                        .frame(height: 200)
+                                        .cornerRadius(10)
+                                        .background(.blue.opacity(0.2))
+                                        //.padding()
+                                }
                             }
                             .padding(.horizontal)
                             
@@ -172,9 +200,9 @@ struct AlpacaPortfolioSpecificView: View {
                                 Text("Buying power")
                                     .font(Font.custom("Anuphan-Regular", size: 14))
                                 Spacer()
-                                /*Text("$\(String(format: "%.2f", portfolio.balance * 0.1))") // Placeholder for 10% buying power
-                                    .font(Font.custom("Anuphan-Bold", size: 14))*/
-                                HStack {
+                                Text("$1000.00") // Placeholder for 10% buying power
+                                    .font(Font.custom("Anuphan-Bold", size: 14))
+                                /*HStack {
                                     Button(action: { isPresentingLink = true }) {
                                         Text("Link Account")
                                             .font(Font.custom("Anuphan-Bold", size: 18))
@@ -195,7 +223,7 @@ struct AlpacaPortfolioSpecificView: View {
                                     }
                                     .disabled(depositAmount.isEmpty || isTransferInProgress)
                                 }
-                                .padding(.horizontal)
+                                .padding(.horizontal)*/
                                 /*Button(action: {
                                     print("button clicked")
                                     //showPlaidLink(amount: 100.0, userEmail: email)
@@ -557,6 +585,30 @@ struct AlpacaPortfolioSpecificView: View {
                 print("Failed to decode JSON: \(error)")
             }
         }.resume()
+    }
+    private func fetchData() {
+        guard let days = timeRangeMapping[selectedTimeRange] else { return }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let today = Date()
+        let pastDate = Calendar.current.date(byAdding: .day, value: -days, to: today)!
+        
+        let fromDate = dateFormatter.string(from: pastDate)
+        let toDate = dateFormatter.string(from: today)
+        
+        fmpAPI.fetchLineChartData(symbol: "AAPL", from: fromDate, to: toDate) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    self.lineChartData = data
+                case .failure(let error):
+                    print("Error fetching data: \(error)")
+                }
+                self.isLoading = false
+            }
+        }
     }
     /*private func createHandler() -> Result<Handler, Plaid.CreateError> {
         let configuration = createLinkTokenConfiguration()

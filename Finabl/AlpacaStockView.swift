@@ -21,12 +21,20 @@ struct AlpacaStockView: View {
     @State private var stockDescription: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     
     @StateObject private var viewModel = NewsViewModel()
-
-    
     
     @State private var lineChartData: [Candlestick] = []
     @State private var isLoading = true
     private let fmpAPI = FMPAPI()
+    // Mapping for date ranges
+    private let timeRangeMapping: [String: Int] = [
+        "1D": 1,
+        "5D": 5,
+        "1M": 30,
+        "3M": 90,
+        "1Y": 365,
+        "3Y": 1095,
+        "Max": 1825
+    ]
     
     var body: some View {
         // Navigation Header
@@ -67,7 +75,7 @@ struct AlpacaStockView: View {
                         if isLoading {
                             Text("Loading data...")
                                 .onAppear {
-                                    fetchData(timeframe: Selectedtimeframe)
+                                    fetchData()
                                     print("hai")
                                 }
                         } else if lineChartData.isEmpty {
@@ -96,6 +104,7 @@ struct AlpacaStockView: View {
                             .onTapGesture {
                                 selectedTimeRange = label
                                 updatePriceChange()
+                                fetchData()
                             }
                     }
                 }
@@ -210,8 +219,32 @@ struct AlpacaStockView: View {
             
         }
     }
-    private func fetchData(timeframe: String) {
+    /*private func fetchData(timeframe: String) {
         fmpAPI.fetchLineChartData(symbol: "AAPL", timeframe: timeframe) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    self.lineChartData = data
+                case .failure(let error):
+                    print("Error fetching data: \(error)")
+                }
+                self.isLoading = false
+            }
+        }
+    }*/
+    private func fetchData() {
+        guard let days = timeRangeMapping[selectedTimeRange] else { return }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let today = Date()
+        let pastDate = Calendar.current.date(byAdding: .day, value: -days, to: today)!
+        
+        let fromDate = dateFormatter.string(from: pastDate)
+        let toDate = dateFormatter.string(from: today)
+        
+        fmpAPI.fetchLineChartData(symbol: ticker, from: fromDate, to: toDate) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
@@ -360,7 +393,7 @@ struct AlpacaStockView: View {
             self.priceChange = "\(String(format: "%.02f", change)) \(suffix)"
             self.priceChangeColor = change >= 0 ? .green : .red
             
-            fetchData(timeframe: "1day")
+            fetchData()
         } else {
             self.priceChange = "0.00%"
             self.priceChangeColor = .gray

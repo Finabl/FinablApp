@@ -36,7 +36,7 @@ struct WalletView: View {
                 }
                 .padding()
                 .background(Color(UIColor.systemBackground))
-                Text("$0.00")
+                Text("$100.00")
                     .font(Font.custom("Anuphan-Bold", size: 48))
                     .padding(.top, 20)
                 Text("Total Buying Power")

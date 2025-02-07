@@ -6,13 +6,48 @@
 //
 
 import SwiftUI
-
+// Model for EOD API response
+struct HistoricalPriceResponse: Decodable {
+    let historical: [Candlestick]
+}
+// Updated Candlestick Model for EOD API
+struct EODCandlestick: Decodable {
+    let date: String
+    let open: Double
+    let high: Double
+    let low: Double
+    let close: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case date, open, high, low, close
+    }
+}
 // MARK: - Network Manager for FMP
 class FMPAPI {
     private let apiKey = "b1ChpDMUHgCwvYTPsv7S1VGarBQ1oxEr" // Replace with your actual FMP API key
     private let baseUrl = "https://financialmodelingprep.com/api/v3"
-    func fetchLineChartData(symbol: String, timeframe: String = "1hour", completion: @escaping (Result<[Candlestick], Error>) -> Void) {
-        let endpoint = "\(baseUrl)/historical-chart/\(timeframe)/\(symbol)?apikey=\(apiKey)"
+    func fetchLineChartData(symbol: String, from: String, to: String, completion: @escaping (Result<[Candlestick], Error>) -> Void) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let fromDate = dateFormatter.date(from: from),
+              let toDate = dateFormatter.date(from: to) else {
+            completion(.failure(NSError(domain: "Invalid Date Format", code: 0, userInfo: nil)))
+            return
+        }
+        
+        let daysDifference = Calendar.current.dateComponents([.day], from: fromDate, to: toDate).day ?? 0
+        
+        var endpoint: String
+        
+        if daysDifference <= 30 {
+            // Use Intraday Chart API for ≤ 1 month
+            endpoint = "\(baseUrl)/historical-chart/5min/\(symbol)?from=\(from)&to=\(to)&apikey=\(apiKey)"
+        } else {
+            // Use Daily EOD API for > 1 month
+            endpoint = "\(baseUrl)/historical-price-full/\(symbol)?from=\(from)&to=\(to)&serietype=line&apikey=\(apiKey)"
+        }
+        
         guard let url = URL(string: endpoint) else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
@@ -30,15 +65,24 @@ class FMPAPI {
             }
 
             do {
-                let candlesticks = try JSONDecoder().decode([Candlestick].self, from: data)
-                completion(.success(candlesticks))
+                if daysDifference <= 30 {
+                    // Decode Intraday Chart Data (direct array)
+                    let candlesticks = try JSONDecoder().decode([Candlestick].self, from: data)
+                    completion(.success(candlesticks))
+                } else {
+                    // Decode Daily EOD Data (wrapped in "historical" key)
+                    let decodedResponse = try JSONDecoder().decode(HistoricalPriceResponse.self, from: data)
+                    completion(.success(decodedResponse.historical))
+                }
             } catch {
+                print("JSON Decoding Error: \(error)")
                 completion(.failure(error))
             }
         }.resume()
     }
+
     func fetchCandlestickData(symbol: String, timeframe: String = "1hour", completion: @escaping (Result<[Candlestick], Error>) -> Void) {
-        let endpoint = "\(baseUrl)/historical-chart/\(timeframe)/\(symbol)?apikey=\(apiKey)"
+        let endpoint = "\(baseUrl)/historical-chart-full/\(timeframe)/\(symbol)?apikey=\(apiKey)"
         guard let url = URL(string: endpoint) else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
