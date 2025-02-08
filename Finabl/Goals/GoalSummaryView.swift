@@ -30,21 +30,21 @@ struct GoalSummaryView: View {
 
             // 🔥 Task List
             List {
-                ForEach(goal.tasks.indices, id: \.self) { taskIndex in
+                ForEach(goal.goaltasks.indices, id: \.self) { taskIndex in
                     HStack {
-                        Text(goal.tasks[taskIndex].name)
-                            .strikethrough(goal.tasks[taskIndex].completed, color: .gray)
-                            .foregroundColor(goal.tasks[taskIndex].completed ? .gray : .black)
+                        Text(goal.goaltasks[taskIndex].name)
+                            .strikethrough(goal.goaltasks[taskIndex].completed, color: .gray)
+                            .foregroundColor(goal.goaltasks[taskIndex].completed ? .gray : .black)
 
                         Spacer()
 
                         Button(action: {
                             markTaskComplete(goal.id, taskIndex)
                         }) {
-                            Text(goal.tasks[taskIndex].completed ? "✔" : "Mark Complete")
+                            Text(goal.goaltasks[taskIndex].completed ? "✔" : "Mark Complete")
                         }
-                        .disabled(goal.tasks[taskIndex].completed)
-                        .foregroundColor(goal.tasks[taskIndex].completed ? .gray : .blue)
+                        .disabled(goal.goaltasks[taskIndex].completed)
+                        .foregroundColor(goal.goaltasks[taskIndex].completed ? .gray : .blue)
                     }
                 }
             }

@@ -684,7 +684,7 @@ struct GoalCreationView: View {
 
     @State private var newGoalTitle: String = ""
     @State private var newTaskTitle: String = ""
-    @State private var tasks: [Task] = []
+    @State private var goaltasks: [GoalTask] = []
 
     let apiBaseUrl = "https://app.finabl.org/api/goals"
 
@@ -703,7 +703,7 @@ struct GoalCreationView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 Button("Add Task") {
                     if !newTaskTitle.isEmpty {
-                        tasks.append(Task(name: newTaskTitle, completed: false))
+                        goaltasks.append(GoalTask(name: newTaskTitle, completed: false))
                         newTaskTitle = ""
                     }
                 }
@@ -711,8 +711,8 @@ struct GoalCreationView: View {
             .padding()
 
             List {
-                ForEach(tasks) { task in
-                    Text(task.name)
+                ForEach(goaltasks) { goaltask in
+                    Text(goaltask.name)
                 }
             }
             .frame(height: 100)
@@ -743,7 +743,7 @@ struct GoalCreationView: View {
             "email": userEmail,
             "title": newGoalTitle,
             "description": "",
-            "tasks": tasks.map { $0.name } // 🔥 Send tasks as an array of strings
+            "tasks": goaltasks.map { $0.name } // 🔥 Send tasks as an array of strings
         ]
 
         guard let jsonData = try? JSONSerialization.data(withJSONObject: goalData) else {
