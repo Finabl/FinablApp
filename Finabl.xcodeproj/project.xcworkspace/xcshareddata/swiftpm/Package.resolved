@@ -1,5 +1,5 @@
 {
-  "originHash" : "eb06dc431cf7d5bed85f8502c7d038405332c81a220c913d6de1457655108e15",
+  "originHash" : "b9d25401638cbdda5aada1f6a7612db2d18123b97c1752873409aac2f74f5f1f",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk",
       "state" : {
-        "revision" : "2e02253fd1ce99145bcbf1bb367ccf61bd0ca46b",
-        "version" : "11.6.0"
+        "revision" : "6318278e8e64d21f0fdcc69004395e4d34048aaf",
+        "version" : "11.8.1"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleAppMeasurement.git",
       "state" : {
-        "revision" : "4f234bcbdae841d7015258fbbf8e7743a39b8200",
-        "version" : "11.4.0"
+        "revision" : "be0881ff728eca210ccb628092af400c086abda3",
+        "version" : "11.7.0"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/plaid/plaid-link-ios-spm",
       "state" : {
-        "branch" : "main",
-        "revision" : "a91f60df31fc89a7d90b08e4581ac27e0ab10ddb"
+        "revision" : "22fdb11061c704fa2e73e56e87c9da9ebdef2263",
+        "version" : "6.0.4"
       }
     },
     {
@@ -119,30 +119,12 @@
       }
     },
     {
-      "identity" : "socket.io-client-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/socketio/socket.io-client-swift.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "42da871d9369f290d6ec4930636c40672143905b"
-      }
-    },
-    {
-      "identity" : "starscream",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/daltoniam/Starscream",
-      "state" : {
-        "revision" : "c6bfd1af48efcc9a9ad203665db12375ba6b145a",
-        "version" : "4.0.8"
-      }
-    },
-    {
       "identity" : "stream-chat-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/GetStream/stream-chat-swift.git",
       "state" : {
-        "revision" : "f1ed2a5c33e4427597e20f2ce9b093ad662f12ed",
-        "version" : "4.70.0"
+        "revision" : "314769b8a819ede5445f7662977ad160f281f1a8",
+        "version" : "4.72.0"
       }
     },
     {
@@ -150,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getstream/stream-chat-swiftui",
       "state" : {
-        "revision" : "99db3cb09f4edd6973b1d0d4ed5640881142d184",
-        "version" : "4.70.0"
+        "revision" : "06a765cf145704a53879856509347d872adcb0ad",
+        "version" : "4.72.0"
       }
     },
     {

@@ -7,14 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6A1489172D2F3FDB00060FC2 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1489162D2F3FDB00060FC2 /* SocketIO */; };
-		6A3E67112D3C4D57005D6339 /* StreamChatSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6A3E67102D3C4D57005D6339 /* StreamChatSwiftUI */; };
-		6A80AEE32D30D28F0005AB08 /* LinkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A80AEE22D30D28F0005AB08 /* LinkKit */; };
-		6AA3B78C2D1CD087004A785C /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B78B2D1CD087004A785C /* FirebaseAnalytics */; };
-		6AA3B78E2D1CD087004A785C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B78D2D1CD087004A785C /* FirebaseAuth */; };
-		6AA3B7902D1CD087004A785C /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B78F2D1CD087004A785C /* FirebaseCore */; };
-		6AA3B7922D1CD087004A785C /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B7912D1CD087004A785C /* FirebaseDatabase */; };
-		6AA3B7942D1CD087004A785C /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA3B7932D1CD087004A785C /* FirebaseFirestore */; };
+		6A0FCAEB2D57E5F30046A2C4 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0FCAEA2D57E5F30046A2C4 /* FirebaseAnalytics */; };
+		6A0FCAED2D57E5F30046A2C4 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0FCAEC2D57E5F30046A2C4 /* FirebaseAuth */; };
+		6A0FCAEF2D57E5F30046A2C4 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0FCAEE2D57E5F30046A2C4 /* FirebaseCore */; };
+		6A0FCAF22D57E62F0046A2C4 /* StreamChatSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0FCAF12D57E62F0046A2C4 /* StreamChatSwiftUI */; };
+		6A0FCAF52D57E6B00046A2C4 /* LinkKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0FCAF42D57E6B00046A2C4 /* LinkKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,7 +38,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6AA3B7962D1CF338004A785C /* Exceptions for "Finabl" folder in "Finabl" target */ = {
+		6A0FCAE82D57E5B50046A2C4 /* Exceptions for "Finabl" folder in "Finabl" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -54,7 +51,7 @@
 		6A63F0482D179649002F4BC8 /* Finabl */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6AA3B7962D1CF338004A785C /* Exceptions for "Finabl" folder in "Finabl" target */,
+				6A0FCAE82D57E5B50046A2C4 /* Exceptions for "Finabl" folder in "Finabl" target */,
 			);
 			path = Finabl;
 			sourceTree = "<group>";
@@ -76,14 +73,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A3E67112D3C4D57005D6339 /* StreamChatSwiftUI in Frameworks */,
-				6AA3B78C2D1CD087004A785C /* FirebaseAnalytics in Frameworks */,
-				6AA3B7902D1CD087004A785C /* FirebaseCore in Frameworks */,
-				6A80AEE32D30D28F0005AB08 /* LinkKit in Frameworks */,
-				6AA3B7922D1CD087004A785C /* FirebaseDatabase in Frameworks */,
-				6AA3B7942D1CD087004A785C /* FirebaseFirestore in Frameworks */,
-				6AA3B78E2D1CD087004A785C /* FirebaseAuth in Frameworks */,
-				6A1489172D2F3FDB00060FC2 /* SocketIO in Frameworks */,
+				6A0FCAF22D57E62F0046A2C4 /* StreamChatSwiftUI in Frameworks */,
+				6A0FCAEB2D57E5F30046A2C4 /* FirebaseAnalytics in Frameworks */,
+				6A0FCAEF2D57E5F30046A2C4 /* FirebaseCore in Frameworks */,
+				6A0FCAED2D57E5F30046A2C4 /* FirebaseAuth in Frameworks */,
+				6A0FCAF52D57E6B00046A2C4 /* LinkKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,14 +138,11 @@
 			);
 			name = Finabl;
 			packageProductDependencies = (
-				6AA3B78B2D1CD087004A785C /* FirebaseAnalytics */,
-				6AA3B78D2D1CD087004A785C /* FirebaseAuth */,
-				6AA3B78F2D1CD087004A785C /* FirebaseCore */,
-				6AA3B7912D1CD087004A785C /* FirebaseDatabase */,
-				6AA3B7932D1CD087004A785C /* FirebaseFirestore */,
-				6A1489162D2F3FDB00060FC2 /* SocketIO */,
-				6A80AEE22D30D28F0005AB08 /* LinkKit */,
-				6A3E67102D3C4D57005D6339 /* StreamChatSwiftUI */,
+				6A0FCAEA2D57E5F30046A2C4 /* FirebaseAnalytics */,
+				6A0FCAEC2D57E5F30046A2C4 /* FirebaseAuth */,
+				6A0FCAEE2D57E5F30046A2C4 /* FirebaseCore */,
+				6A0FCAF12D57E62F0046A2C4 /* StreamChatSwiftUI */,
+				6A0FCAF42D57E6B00046A2C4 /* LinkKit */,
 			);
 			productName = Finabl;
 			productReference = 6A63F0462D179649002F4BC8 /* Finabl.app */;
@@ -236,10 +227,9 @@
 			mainGroup = 6A63F03D2D179649002F4BC8;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				6A1489152D2F3FDB00060FC2 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
-				6A80AEE12D30D28F0005AB08 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */,
-				6A3E670F2D3C4D57005D6339 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */,
+				6A0FCAE92D57E5F30046A2C4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				6A0FCAF02D57E62F0046A2C4 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */,
+				6A0FCAF32D57E6B00046A2C4 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6A63F0472D179649002F4BC8 /* Products */;
@@ -443,6 +433,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Finabl/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Finabl;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -484,6 +475,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Finabl/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Finabl;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -643,80 +635,57 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		6A1489152D2F3FDB00060FC2 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/socketio/socket.io-client-swift.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-		6A3E670F2D3C4D57005D6339 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getstream/stream-chat-swiftui";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.70.0;
-			};
-		};
-		6A80AEE12D30D28F0005AB08 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/plaid/plaid-link-ios-spm";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-		6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		6A0FCAE92D57E5F30046A2C4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 11.6.0;
+				minimumVersion = 11.8.1;
+			};
+		};
+		6A0FCAF02D57E62F0046A2C4 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getstream/stream-chat-swiftui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.72.0;
+			};
+		};
+		6A0FCAF32D57E6B00046A2C4 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/plaid/plaid-link-ios-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.4;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6A1489162D2F3FDB00060FC2 /* SocketIO */ = {
+		6A0FCAEA2D57E5F30046A2C4 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6A1489152D2F3FDB00060FC2 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */;
-			productName = SocketIO;
-		};
-		6A3E67102D3C4D57005D6339 /* StreamChatSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6A3E670F2D3C4D57005D6339 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */;
-			productName = StreamChatSwiftUI;
-		};
-		6A80AEE22D30D28F0005AB08 /* LinkKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6A80AEE12D30D28F0005AB08 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */;
-			productName = LinkKit;
-		};
-		6AA3B78B2D1CD087004A785C /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 6A0FCAE92D57E5F30046A2C4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
 		};
-		6AA3B78D2D1CD087004A785C /* FirebaseAuth */ = {
+		6A0FCAEC2D57E5F30046A2C4 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 6A0FCAE92D57E5F30046A2C4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
 		};
-		6AA3B78F2D1CD087004A785C /* FirebaseCore */ = {
+		6A0FCAEE2D57E5F30046A2C4 /* FirebaseCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 6A0FCAE92D57E5F30046A2C4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
 		};
-		6AA3B7912D1CD087004A785C /* FirebaseDatabase */ = {
+		6A0FCAF12D57E62F0046A2C4 /* StreamChatSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabase;
+			package = 6A0FCAF02D57E62F0046A2C4 /* XCRemoteSwiftPackageReference "stream-chat-swiftui" */;
+			productName = StreamChatSwiftUI;
 		};
-		6AA3B7932D1CD087004A785C /* FirebaseFirestore */ = {
+		6A0FCAF42D57E6B00046A2C4 /* LinkKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6AA3B78A2D1CD087004A785C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
+			package = 6A0FCAF32D57E6B00046A2C4 /* XCRemoteSwiftPackageReference "plaid-link-ios-spm" */;
+			productName = LinkKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
