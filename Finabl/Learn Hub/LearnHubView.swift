@@ -8,102 +8,134 @@
 import SwiftUI
 
 struct LearnHubView: View {
+    @State private var selectedDestination: String? = "learningHub"
+    
     var body: some View {
                 // Main Scrollable Content
+        NavigationView {
             VStack(spacing: 0) {
-                // Custom Header
+                // Custom Header with Dropdown
                 HStack {
-                    Text("Learning Hub")
-                        .font(Font.custom("Anuphan-Medium", size: 20))
+                    Menu {
+                        Button("Learning Hub") {
+                            selectedDestination = "learningHub"
+                        }
+                        Button("Trading Simulator") {
+                            selectedDestination = "tradingSimulator"
+                        }
+                    } label: {
+                        HStack {
+                            Text(selectedDestination == "learningHub" ? "Learning Hub" : "Trading Simulator")
+                                .font(Font.custom("Anuphan-Medium", size: 20))
+                            Image(systemName: "chevron.down")
+                                .font(.caption)
+                        }
                         .foregroundColor(.primary)
+                    }
                     Spacer()
                     Image(systemName: "magnifyingglass")
                         .font(.title3)
                         .foregroundColor(.primary)
                 }
                 .padding(.horizontal)
-                .padding(.bottom, 10)
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        // Daily Tasks Section
-                        VStack(alignment: .leading, spacing: 15) {
-                            Text("Daily Tasks")
-                                .font(.custom("Anuphan-Medium", size: 18))
-                                .padding(.horizontal)
-
-                            // Horizontal Date Scroll
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 20) {
-                                    ForEach(17...21, id: \.self) { day in
-                                        VStack(spacing: 5) {
-                                            Circle()
-                                                .fill(day <= 19 ? Color.green : Color.secondary.opacity(0.2))
-                                                .frame(width: 40, height: 40)
-                                            Text("Nov \(day)")
-                                                .font(.custom("Anuphan-Regular", size: 14))
-                                        }
-                                    }
-                                }
-                                .padding(.horizontal)
-                            }
-
-                            // Tasks
-                            VStack(spacing: 10) {
-                                TaskRow(title: "Lesson Module", subtitle: "Intro to Options Investing")
-                                TaskRow(title: "Market Moments Quiz", subtitle: "11/17 Market Moments Quiz")
-                            }
-                        }
-
-                        // Continue Learning Section
-                        VStack(alignment: .leading, spacing: 15) {
-                            Text("Continue Learning")
-                                .font(.custom("Anuphan-Medium", size: 18))
-                                .padding(.horizontal)
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 15) {
-                                        LearningCard(
-                                            title: "1.10 Intro to Options Trading",
-                                            subtitle: "Intro to Investing"
-                                        )
-
-                                        LearningCard(
-                                            title: "1.2 How to purchase and sell Bonds",
-                                            subtitle: "Investing in the Government: Bonds"
-                                        )
-                                    
-                                }
-                                .padding(.horizontal)
-                            }
-                        }
-
-                        // Your Courses Section
-                        VStack(alignment: .leading, spacing: 15) {
-                            Text("Your Courses")
-                                .font(.custom("Anuphan-Medium", size: 18))
-                                .padding(.horizontal)
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 15) {
-                                        CourseCard(
-                                            courseName: "Course Name",
-                                            moduleName: "1.1 Section Name"
-                                        )
-                                        CourseCard(
-                                            courseName: "Course Name",
-                                            moduleName: "1.2 Section Name"
-                                        )
-                                }
-                                .padding(.horizontal)
-                            }
-                        }
-                    }
-                    .padding(.top, 10)
+                .padding(.bottom, 10);
+                
+                
+                switch selectedDestination {
+                case "learningHub":
+                    LearningHubContent()
+                case "tradingSimulator":
+                    TradingSimulationView()
+                default:
+                    EmptyView()
                 }
             }
+        }
     }
 }
 
+struct LearningHubContent: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                // Daily Tasks Section
+                VStack(alignment: .leading, spacing: 15) {
+                    Text("Daily Tasks")
+                        .font(.custom("Anuphan-Medium", size: 18))
+                        .padding(.horizontal)
+                    
+                    // Horizontal Date Scroll
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 20) {
+                            ForEach(17...21, id: \.self) { day in
+                                VStack(spacing: 5) {
+                                    Circle()
+                                        .fill(day <= 19 ? Color.green : Color.secondary.opacity(0.2))
+                                        .frame(width: 40, height: 40)
+                                    Text("Nov \(day)")
+                                        .font(.custom("Anuphan-Regular", size: 14))
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    // Tasks
+                    VStack(spacing: 10) {
+                        TaskRow(title: "Lesson Module", subtitle: "Intro to Options Investing")
+                        TaskRow(title: "Market Moments Quiz", subtitle: "11/17 Market Moments Quiz")
+                    }
+                }
+                
+                // Continue Learning Section
+                VStack(alignment: .leading, spacing: 15) {
+                    Text("Continue Learning")
+                        .font(.custom("Anuphan-Medium", size: 18))
+                        .padding(.horizontal)
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 15) {
+                            LearningCard(
+                                title: "1.10 Intro to Options Trading",
+                                subtitle: "Intro to Investing"
+                            )
+                            
+                            LearningCard(
+                                title: "1.2 How to purchase and sell Bonds",
+                                subtitle: "Investing in the Government: Bonds"
+                            )
+                            
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+                
+                // Your Courses Section
+                VStack(alignment: .leading, spacing: 15) {
+                    Text("Your Courses")
+                        .font(.custom("Anuphan-Medium", size: 18))
+                        .padding(.horizontal)
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 15) {
+                            CourseCard(
+                                courseName: "Course Name",
+                                moduleName: "1.1 Section Name"
+                            )
+                            CourseCard(
+                                courseName: "Course Name",
+                                moduleName: "1.2 Section Name"
+                            )
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+            }
+            .padding(.top, 10)
+        }
+
+    }
+}
 
 // Reusable Components
 struct TaskRow: View {
