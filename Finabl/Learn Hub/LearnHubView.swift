@@ -95,10 +95,33 @@ struct LearningHubContent: View {
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
-                            LearningCard(
-                                title: "1.10 Intro to Options Trading",
-                                subtitle: "Intro to Investing"
-                            )
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("1.10 Intro to Options Trading")
+                                    .font(.custom("Anuphan-Medium", size: 16))
+                                Text("Intro to Investing")
+                                    .font(.custom("Anuphan-Regular", size: 14))
+                                    .foregroundColor(.gray)
+
+                                ProgressView(value: 0.5)
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                                NavigationLink(destination: CoursePageView().navigationBarBackButtonHidden()) {
+                                    Text("Continue")
+                                        .font(.custom("Anuphan-Medium", size: 16))
+                                        .fontWeight(.bold)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.blue)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(8)
+                                    
+                                }
+
+                            }
+                            .padding()
+                            .frame(width: 200)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(10)
                             
                             LearningCard(
                                 title: "1.2 How to purchase and sell Bonds",

@@ -115,7 +115,10 @@ struct AlpacaStockView: View {
                     ActionButton(image: "plus", title: "Add to watchlist")
                     ActionButton(image: "bell", title: "Set notification")
                     ActionButton(image: "rectangle.split.3x3", title: "Compare stocks")
-                    ActionButton(image: "chart.xyaxis.line", title: "Create ideograph")
+                    NavigationLink(destination: IdeographView(ticker: ticker).navigationBarBackButtonHidden()) {
+                        ActionButton(image: "chart.xyaxis.line", title: "Create ideograph")
+                    }
+
                 }
                 .padding()
                 // Recommendation Heading
