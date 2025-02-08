@@ -123,6 +123,12 @@ struct TradingSimulationView: View {
         }
     }
     
+    private var tradeView: some View {
+        Group {
+            
+        }
+    }
+    
     private var portfolioSelectionView: some View {
         Picker("Portfolio", selection: $selectedPortfolio) {
             Text("Select Portfolio").tag(nil as PortfolioData?)
