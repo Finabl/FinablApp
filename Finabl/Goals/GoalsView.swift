@@ -14,15 +14,16 @@ struct Goal: Identifiable, Codable {
     var description: String
     var progress: Int
     var completed: Bool
-    var tasks: [Task]
+    var goaltasks: [GoalTask]
 
     enum CodingKeys: String, CodingKey {
         case id = "goalId" // Map backend's goalId to Swift's id
-        case title, description, progress, completed, tasks
+        case goaltasks = "tasks"
+        case title, description, progress, completed
     }
 }
 
-struct Task: Identifiable, Codable {
+struct GoalTask: Identifiable, Codable {
     var id = UUID()  // Tasks don’t have unique backend IDs, so we generate UUIDs
     var name: String
     var completed: Bool
@@ -37,7 +38,7 @@ struct GoalsView: View {
     @State private var goals: [Goal] = []
     @State private var newGoalTitle: String = ""
     @State private var newTaskTitle: String = ""
-    @State private var tasks: [Task] = []
+    @State private var goaltasks: [GoalTask] = []
     @State private var userEmail: String = ""
     
     let apiBaseUrl = "https://app.finabl.org/api/goals"
@@ -64,7 +65,7 @@ struct GoalsView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     Button("Add Task") {
                         if !newTaskTitle.isEmpty {
-                            tasks.append(Task(name: newTaskTitle, completed: false))
+                            goaltasks.append(GoalTask(name: newTaskTitle, completed: false))
                             newTaskTitle = ""
                         }
                     }
@@ -87,18 +88,18 @@ struct GoalsView: View {
                             ProgressView(value: Double(goals[goalIndex].progress) / 100)
                                 .padding(.bottom, 5)
                             
-                            ForEach(goals[goalIndex].tasks.indices, id: \.self) { taskIndex in
+                            ForEach(goals[goalIndex].goaltasks.indices, id: \.self) { taskIndex in
                                 HStack {
-                                    Text(goals[goalIndex].tasks[taskIndex].name)
-                                        .strikethrough(goals[goalIndex].tasks[taskIndex].completed, color: .gray)
-                                        .foregroundColor(goals[goalIndex].tasks[taskIndex].completed ? .gray : .black)
+                                    Text(goals[goalIndex].goaltasks[taskIndex].name)
+                                        .strikethrough(goals[goalIndex].goaltasks[taskIndex].completed, color: .gray)
+                                        .foregroundColor(goals[goalIndex].goaltasks[taskIndex].completed ? .gray : .black)
                                     
                                     Spacer()
-                                    Button(goals[goalIndex].tasks[taskIndex].completed ? "✔" : "Mark Complete") {
+                                    Button(goals[goalIndex].goaltasks[taskIndex].completed ? "✔" : "Mark Complete") {
                                         markTaskComplete(goalIndex: goalIndex, taskIndex: taskIndex)
                                     }
-                                    .disabled(goals[goalIndex].tasks[taskIndex].completed)
-                                    .foregroundColor(goals[goalIndex].tasks[taskIndex].completed ? .gray : .blue)
+                                    .disabled(goals[goalIndex].goaltasks[taskIndex].completed)
+                                    .foregroundColor(goals[goalIndex].goaltasks[taskIndex].completed ? .gray : .blue)
                                 }
                             }
                             
@@ -166,7 +167,7 @@ struct GoalsView: View {
             "email": userEmail,
             "title": newGoalTitle,
             "description": "",
-            "tasks": tasks.map { $0.name }
+            "tasks": goaltasks.map { $0.name }
         ]
         
         print("📤 Creating Goal with Data:", goalData)
@@ -198,7 +199,7 @@ struct GoalsView: View {
                     DispatchQueue.main.async {
                         fetchGoals() // Refresh after creating a goal
                         newGoalTitle = ""
-                        tasks.removeAll()
+                        goaltasks.removeAll()
                     }
                 } catch {
                     print("❌ Error decoding create goal response:", error)

@@ -157,10 +157,10 @@ struct TradingSimulationView: View {
                     .pickerStyle(.menu)
                     .onChange(of: selectedStock) { oldValue, newValue in
                         guard let stock = newValue else { return }
-                        Task {
+                        /*Task {
                             print(stock.ticker)
                             await fetchStockHistory(ticker: stock.ticker)
-                        }
+                        }*/
                     }
                 }
             }
