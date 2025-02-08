@@ -8,13 +8,28 @@
 import SwiftUI
 import FirebaseAuth
 
+struct Watchlist: Codable, Identifiable {
+    var id: String
+    var name: String
+    var tickers: [String]
+}
+
+struct WatchlistResponse: Codable {
+    let watchlists: [Watchlist]
+}
+
+
 struct HomeView: View {
-    @State private var firstName: String = "Gursharan" // Default placeholder for firstName
+    @State private var firstName: String = "Gursharan"
     @State private var stockPrice: String = "$0.00"
+    @State private var userEmail: String = ""
     @State private var lineChartData: [Candlestick] = []
     @State private var isLoading = true
+    @State private var goals: [Goal] = []
+    @State private var showCreateGoalPopup = false // 🔥 State to show/hide popup
+    @State private var watchlists: [Watchlist] = []
     private let fmpAPI = FMPAPI()
-    // Mapping for date ranges
+    let apiBaseUrl = "https://app.finabl.org/api/goals"
     private let timeRangeMapping: [String: Int] = [
         "1D": 1,
         "5D": 5,
@@ -25,7 +40,7 @@ struct HomeView: View {
         "Max": 1825
     ]
     @State private var selectedTimeRange: String = "1D"
-    @State private var titleToUseForPortfolios: String = "Portfolios" // Default placeholder for firstName
+    @State private var titleToUseForPortfolios: String = "Portfolios"
     @State private var errorMessage: String? = nil
     @State private var portfolios = [
         AlpacaPortfolio(
@@ -290,27 +305,48 @@ struct HomeView: View {
                             .font(Font.custom("Anuphan-Bold", size: 18))
                         Spacer()
                         Button(action: {
-                            // Add goal action
+                            showCreateGoalPopup.toggle()
                         }) {
                             Image(systemName: "plus")
                                 .foregroundColor(.blue)
                         }
                     }
-                    ForEach(0..<2) { _ in
-                        VStack(alignment: .leading, spacing: 5) {
-                            HStack {
-                                Text("Invest $200")
-                                    .font(Font.custom("Anuphan-Regular", size: 16))
-                                Spacer()
-                                Text("35%")
-                                    .font(Font.custom("Anuphan-Regular", size: 14))
-                                    .foregroundColor(.gray)
+                    ForEach(goals.indices, id: \.self) { goalIndex in
+                        let goal = goals[goalIndex] // ✅ Get the goal
+
+                        NavigationLink(destination: GoalSummaryView(
+                                               goals: $goals,
+                                               goal: goal,
+                                               userEmail: userEmail,
+                                               deleteGoal: deleteGoal,
+                                               markTaskComplete: markTaskComplete
+                        )) {
+                            VStack(alignment: .leading, spacing: 5) {
+                                HStack {
+                                    Text(goals[goalIndex].title)
+                                        .font(Font.custom("Anuphan-Regular", size: 16))
+                                    Spacer()
+                                    Text("\(goals[goalIndex].progress)%")
+                                        .font(Font.custom("Anuphan-Regular", size: 14))
+                                        .foregroundColor(.gray)
+                                }
+                                ProgressView(value: Double(goals[goalIndex].progress) / 100)
+                                    .progressViewStyle(LinearProgressViewStyle(tint: greenColor))
+                                    .scaleEffect(x: 1, y: 1.5, anchor: .center)
                             }
-                            ProgressView(value: 0.35)
-                                .progressViewStyle(LinearProgressViewStyle(tint: greenColor))
-                                .scaleEffect(x: 1, y: 1.5, anchor: .center)
+                            
+                        }
+
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) { // 🔥 Add swipe action
+                            Button(role: .destructive) {
+                                deleteGoal(goalId: goals[goalIndex].id)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            .tint(.red) // 🔥 Matches UI from your image
                         }
                     }
+
                 }
                 .padding(.horizontal)
                 
@@ -324,17 +360,19 @@ struct HomeView: View {
                             .font(Font.custom("Anuphan-Regular", size: 14))
                             .foregroundColor(.gray)
                     }
-                    ForEach(0..<2) { _ in
-                        HStack {
-                            Text("Watchlist name")
-                                .font(Font.custom("Anuphan-Regular", size: 16))
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.gray)
+                    ForEach(watchlists, id: \.id) { watchlist in
+                        NavigationLink(destination: WatchlistSummaryView(watchlist: watchlist, userEmail: userEmail)) {
+                            HStack {
+                                Text(watchlist.name)
+                                    .font(Font.custom("Anuphan-Regular", size: 16))
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color(UIColor.systemGray6))
+                            .cornerRadius(10)
                         }
-                        .padding()
-                        .background(Color(UIColor.systemGray6))
-                        .cornerRadius(10)
                     }
                 }
                 .padding(.horizontal)
@@ -368,6 +406,9 @@ struct HomeView: View {
         }.onAppear {
             fetchUserData()
         }
+        .sheet(isPresented: $showCreateGoalPopup) { // 🔥 Present the popup
+            GoalCreationView(isPresented: $showCreateGoalPopup, userEmail: userEmail, fetchGoals: {fetchGoals(userEmail: userEmail)})
+        }
     }
 
     private func fetchUserData() {
@@ -379,11 +420,46 @@ struct HomeView: View {
         }
 
         let email = user.email ?? ""
-
+        userEmail = email
         // Fetch user details
+        fetchWatchlists(userEmail: email)
         fetchFirstName(email: email)
         fetchPortfolios(email: email)
+        fetchGoals(userEmail: email)
     }
+    private func fetchGoals(userEmail: String) {
+        guard let url = URL(string: "\(apiBaseUrl)/get/\(userEmail)") else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, !data.isEmpty else {
+                print("Error: API returned an empty response")
+                return
+            }
+            
+            do {
+                // Convert raw data into a JSON object
+                if let rawJson = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Raw API Response:", rawJson)
+                    
+                    // Extract "goals" array, but ensure it's a proper Swift array
+                    if let goalsArray = rawJson["goals"] as? [[String: Any]] {
+                        let jsonData = try JSONSerialization.data(withJSONObject: goalsArray, options: [])
+                        let decodedGoals = try JSONDecoder().decode([Goal].self, from: jsonData)
+                        DispatchQueue.main.async {
+                            self.goals = decodedGoals
+                        }
+                    } else {
+                        print("Error: 'goals' key is not returning a valid array")
+                    }
+                } else {
+                    print("Error: API did not return valid JSON")
+                }
+            } catch {
+                print("Error decoding goals:", error)
+            }
+        }.resume()
+    }
+    
 
     private func fetchFirstName(email: String) {
         guard let url = URL(string: "https://app.finabl.org/api/users/user/\(email)") else {
@@ -506,6 +582,207 @@ struct HomeView: View {
             }
         }.resume()
     }
+    
+    /// Fetch watchlists from API
+    func fetchWatchlists(userEmail: String) {
+        guard let url = URL(string: "https://app.finabl.org/api/users/user/\(userEmail)/watchlists") else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data {
+                do {
+                    let decodedResponse = try JSONDecoder().decode(WatchlistResponse.self, from: data)
+                    DispatchQueue.main.async {
+                        self.watchlists = decodedResponse.watchlists
+                    }
+                } catch {
+                    print("Failed to decode watchlists:", error)
+                }
+            }
+        }.resume()
+    }
+    // Delete Goal
+    private func deleteGoal(goalId: String) {
+        guard let url = URL(string: "\(apiBaseUrl)/delete") else { return }
+        
+        let requestData: [String: Any] = [
+            "email": userEmail,
+            "goalId": goalId  // ✅ Send goalId instead of goalIndex
+        ]
+        
+        print("📤 Deleting Goal:", requestData)
+        
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestData) else {
+            print("❌ JSON Serialization failed for deleteGoal()")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("❌ Error deleting goal:", error.localizedDescription)
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                print("📩 Delete Goal Response Code:", httpResponse.statusCode)
+            }
+            
+            if let data = data {
+                do {
+                    let responseJSON = try JSONSerialization.jsonObject(with: data, options: [])
+                    print("✅ Delete Goal Response:", responseJSON)
+                    DispatchQueue.main.async {
+                        fetchGoals(userEmail: userEmail)  // Refresh UI after deleting a goal
+                    }
+                } catch {
+                    print("❌ Error decoding delete goal response:", error)
+                }
+            }
+        }.resume()
+    }
+    // ✅ Add `markTaskComplete` function to avoid the error
+    func markTaskComplete(goalId: String, taskIndex: Int) {
+        guard let url = URL(string: "\(apiBaseUrl)/complete") else { return }
+
+        let requestData: [String: Any] = [
+            "email": userEmail,
+            "goalId": goalId,
+            "taskIndex": taskIndex
+        ]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: requestData) else { return }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+                do {
+                    _ = try JSONSerialization.jsonObject(with: data, options: [])
+                    DispatchQueue.main.async {
+                        fetchGoals(userEmail: userEmail) // ✅ Refresh the goals list
+                    }
+                } catch {
+                    print("❌ Error updating task:", error)
+                }
+            }
+        }.resume()
+    }
+    
+}
+
+struct GoalCreationView: View {
+    @Binding var isPresented: Bool // Controls modal visibility
+    var userEmail: String
+    var fetchGoals: () -> Void // Callback to refresh goals after creation
+
+    @State private var newGoalTitle: String = ""
+    @State private var newTaskTitle: String = ""
+    @State private var tasks: [Task] = []
+
+    let apiBaseUrl = "https://app.finabl.org/api/goals"
+
+    var body: some View {
+        VStack {
+            Text("Create New Goal")
+                .font(.headline)
+                .padding()
+
+            TextField("Enter Goal Title", text: $newGoalTitle)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            HStack {
+                TextField("Enter Task", text: $newTaskTitle)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                Button("Add Task") {
+                    if !newTaskTitle.isEmpty {
+                        tasks.append(Task(name: newTaskTitle, completed: false))
+                        newTaskTitle = ""
+                    }
+                }
+            }
+            .padding()
+
+            List {
+                ForEach(tasks) { task in
+                    Text(task.name)
+                }
+            }
+            .frame(height: 100)
+
+            Button("Create Goal") {
+                createGoal()
+            }
+            .padding()
+            .background(Color.green)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+
+            Button("Cancel") {
+                isPresented = false // 🔥 Close modal
+            }
+            .padding()
+            .foregroundColor(.red)
+        }
+        .padding()
+    }
+
+    // ✅ Create Goal API Call
+    func createGoal() {
+        guard let url = URL(string: "\(apiBaseUrl)/create") else { return }
+
+        // ✅ Ensure tasks are formatted as an array of strings
+        let goalData: [String: Any] = [
+            "email": userEmail,
+            "title": newGoalTitle,
+            "description": "",
+            "tasks": tasks.map { $0.name } // 🔥 Send tasks as an array of strings
+        ]
+
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: goalData) else {
+            print("❌ JSON Serialization failed for createGoal()")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("❌ Error creating goal:", error.localizedDescription)
+                return
+            }
+
+            if let httpResponse = response as? HTTPURLResponse {
+                print("📩 Create Goal Response Code:", httpResponse.statusCode)
+            }
+
+            if let data = data {
+                do {
+                    let responseJSON = try JSONSerialization.jsonObject(with: data, options: [])
+                    print("✅ Create Goal Response:", responseJSON)
+                    DispatchQueue.main.async {
+                        fetchGoals()  // 🔥 Refresh UI after creating goal
+                        isPresented = false // 🔥 Close modal after successful creation
+                    }
+                } catch {
+                    print("❌ Error decoding create goal response:", error)
+                }
+            }
+        }.resume()
+    }
+    
+
+
 }
 
 

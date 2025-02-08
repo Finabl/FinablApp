@@ -30,7 +30,7 @@ struct TabBarView: View {
 
             // Search Tab
             NavigationStack {
-                TradingSimulatorView()
+                GoalsView()
                 //RealTimeLineChartView()
                 //StockCandlestickView()
                 /*VStack {

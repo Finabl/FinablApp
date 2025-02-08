@@ -258,10 +258,7 @@ struct SocialHubView: View {
                                     .cornerRadius(8)
                                 }
                                 
-                                
-                                Button(action: {
-                                    // Competition action
-                                }) {
+                                NavigationLink(destination: CompetitionsView().navigationBarBackButtonHidden()) {
                                     VStack {
                                         Image(systemName: "trophy.fill")
                                             .font(.system(size: 24))
