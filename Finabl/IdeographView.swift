@@ -51,6 +51,7 @@ struct IdeographView: View {
                             VStack {
                                 Text(ticker)
                                     .font(.title)
+                                    .foregroundStyle(Color.black)
                                     .bold()
                                     .padding()
                                     .background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(radius: 2))

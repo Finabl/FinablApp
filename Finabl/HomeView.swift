@@ -18,7 +18,6 @@ struct WatchlistResponse: Codable {
     let watchlists: [Watchlist]
 }
 
-
 struct HomeView: View {
     @State private var firstName: String = "Gursharan"
     @State private var stockPrice: String = "$0.00"
@@ -734,16 +733,14 @@ struct GoalCreationView: View {
         .padding()
     }
 
-    // ✅ Create Goal API Call
     func createGoal() {
         guard let url = URL(string: "\(apiBaseUrl)/create") else { return }
 
-        // ✅ Ensure tasks are formatted as an array of strings
         let goalData: [String: Any] = [
             "email": userEmail,
             "title": newGoalTitle,
             "description": "",
-            "tasks": goaltasks.map { $0.name } // 🔥 Send tasks as an array of strings
+            "tasks": goaltasks.map { $0.name }
         ]
 
         guard let jsonData = try? JSONSerialization.data(withJSONObject: goalData) else {
