@@ -28,16 +28,21 @@ struct TabBarView: View {
                 }
             }
 
+
+            // Portfolio Tab
+            NavigationStack {
+                IdeographView(ticker: "AAPL")
+            }
+            .tabItem {
+                VStack {
+                    Image(systemName: "chart.bar.xaxis.ascending")
+                    Text("Portfolio")
+                        .font(Font.custom("Anuphan-Light", size: 12))
+                }
+            }
             // Search Tab
             NavigationStack {
                 IdeographView(ticker: "AAPL")
-                //RealTimeLineChartView()
-                //StockCandlestickView()
-                /*VStack {
-                    Text("Search")
-                        .font(Font.custom("Anuphan-Light", size: 24))
-                        .padding()
-                }*/
             }
             .tabItem {
                 VStack {

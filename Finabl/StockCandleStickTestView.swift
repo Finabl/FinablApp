@@ -250,4 +250,3 @@ struct CandlestickChart: View {
     StockCandlestickView()
 }
 
-
