@@ -9,12 +9,8 @@ import SwiftUI
 
 struct LearnHubView: View {
     @State private var selectedDestination: String? = "learningHub"
-    
     var body: some View {
-                // Main Scrollable Content
-        NavigationView {
             VStack(spacing: 0) {
-                // Custom Header with Dropdown
                 HStack {
                     Menu {
                         Button("Learning Hub") {
@@ -50,7 +46,6 @@ struct LearnHubView: View {
                     EmptyView()
                 }
             }
-        }
     }
 }
 
@@ -69,9 +64,17 @@ struct LearningHubContent: View {
                         HStack(spacing: 20) {
                             ForEach(17...21, id: \.self) { day in
                                 VStack(spacing: 5) {
-                                    Circle()
-                                        .fill(day <= 19 ? Color.green : Color.secondary.opacity(0.2))
-                                        .frame(width: 40, height: 40)
+                                    ZStack {
+                                        Circle()
+                                            .fill(day <= 19 ? Color.green : Color.secondary.opacity(0.2))
+                                            .frame(width: 40, height: 40)
+                                        if day <= 19 {
+                                            Image(systemName: "checkmark")
+                                                .font(.system(size: 20, weight: .bold))
+                                                .foregroundStyle(.white)
+                                        }
+                                    }
+
                                     Text("Nov \(day)")
                                         .font(.custom("Anuphan-Regular", size: 14))
                                 }
